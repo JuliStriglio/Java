@@ -18,7 +18,7 @@ public class UsuarioServlet extends HttpServlet {
             List<Usuario> usuarios = usuarioDAO.listarUsuarios();
             
             request.setAttribute("usuarios", usuarios); // Envía datos al JSP
-            System.out.println("Usuarios enviados al JSP: " + request.getAttribute("usuarios"));
+            // System.out.println("Usuarios enviados al JSP: " + request.getAttribute("usuarios"));
             request.getRequestDispatcher("/listadoUsuarios.jsp").forward(request, response);
             
         } catch (Exception e) {
