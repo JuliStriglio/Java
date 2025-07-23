@@ -1,35 +1,34 @@
 package model;
-import java.util.Date;
+import java.time.LocalTime;
 public class Instalacion {
 	
 	private int id;
 	private String nombre;
 	private String tipo;
-	private Date horarios;
+	private LocalTime horaApertura;
+	private LocalTime horaCierre;
 	private String direccion;
 	private Double precioxhora;
 
-	
-	
-	
 	 // Constructor SIN id (para crear nuevos)
-	public Instalacion(String nombre, String tipo, Date horarios, String direccion, Double precioxhora) {
+	public Instalacion(String nombre, String tipo, LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
 		super();
 		this.nombre = nombre;
 		this.tipo = tipo;
-		this.horarios = horarios;
+		this.horaApertura = horaApertura;
+		this.horaCierre = horaCierre;
 		this.direccion = direccion;
 		this.precioxhora = precioxhora; }
 	
 	
 	// Contructor CON id (para leer en la bd)
-	
-	public Instalacion(int id, String nombre, String tipo, Date horarios, String direccion, Double precioxhora) {
+	public Instalacion(int id, String nombre, String tipo,LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
 		this.tipo = tipo;
-		this.horarios = horarios;
+		this.horaApertura = horaApertura;
+		this.horaCierre = horaCierre;
 		this.direccion = direccion;
 		this.precioxhora = precioxhora;
 	}
@@ -59,13 +58,21 @@ public class Instalacion {
 		this.tipo = tipo;
 	}
 
-	public Date getHorarios() {
-		return horarios;
+	public LocalTime getHoraApertura() {
+		return horaApertura;
 	}
-
-	public void setHorarios(Date horarios) {
-		this.horarios = horarios;
+	
+	public void setHoraApertura(LocalTime horaApertura) {
+		this.horaApertura = horaApertura;
 	}
+	
+	public LocalTime getHoraCierre() {
+		return horaCierre;
+	}
+	
+	public void setHoraCierre(LocalTime horaCierre) {
+		this.horaCierre = horaCierre;
+	}	
 
 	public String getDireccion() {
 		return direccion;
