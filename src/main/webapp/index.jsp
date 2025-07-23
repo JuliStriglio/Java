@@ -23,6 +23,7 @@
     <h1>Bienvenido al Sistema de Reservas</h1>
 
     <a href="${pageContext.request.contextPath}/usuarios">Ver Usuarios</a>
+	<a href="${pageContext.request.contextPath}/usuarios?action=mostrarFormulario">Registrar</a>
 
 </body>
 </html>

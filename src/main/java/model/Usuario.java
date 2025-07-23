@@ -15,6 +15,10 @@ public class Usuario {
         this.password = contraseña;
         this.rol = rol;
     }
+    
+    public Usuario() {
+        
+    }
 
     // Constructor CON id (para leer de la DB)
     public Usuario(int id, String nombre, String email, String contraseña, Boolean rol) {
