@@ -5,12 +5,9 @@
 <html>
 <head>
     <title>Listado de Usuarios</title>
-    <style>
-        /* Tus estilos CSS aquí */
-        body { font-family: Arial; margin: 20px; }
-        table { width: 100%; border-collapse: collapse; }
-        th, td { padding: 10px; border: 1px solid #ddd; }
-    </style>
+    
+    <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css" >
+
 </head>
 <body>
     <h1>Listado de Usuarios</h1>
@@ -25,13 +22,15 @@
         <tbody>
         
             <c:forEach items="${usuarios}" var="usuario">
-    <tr>
-        <td>${usuario.getId()}</td>
-        <td>${usuario.getNombre()}</td>
-        <td>${usuario.getEmail()}</td>
-    </tr>
-</c:forEach>
+			    <tr>
+			        <td>${usuario.getId()}</td>
+			        <td>${usuario.getNombre()}</td>
+			        <td>${usuario.getEmail()}</td>
+			    </tr>
+			</c:forEach>
         </tbody>
     </table>
+    
+    <button onclick="history.back()" class="btn btn-secondary">Volver Atrás</button>
 </body>
 </html>
