@@ -1,0 +1,169 @@
+@charset "UTF-8";
+
+.dashboard-container {
+    width: 100%;
+    max-width: 900px; 
+    background-color: #ffffff;
+    padding: 30px 40px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+    margin: 30px auto; 
+    text-align: left;
+}
+
+.dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #e0e0e0;
+    padding-bottom: 20px;
+    margin-bottom: 30px;
+    flex-wrap: wrap; /* Para que se ajusten en móviles */
+    gap: 15px;
+}
+
+.welcome-message h2 {
+    margin: 0;
+    color: #1a2c4e;
+    font-size: 1.8em;
+}
+
+.welcome-message p {
+    margin: 5px 0 0 0;
+    color: #555;
+    font-size: 1.1em;
+}
+
+.dashboard-content h3 {
+    color: #333;
+    font-size: 1.5em;
+    margin-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 10px;
+}
+
+/* Para el panel de admin */
+.action-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); 
+    gap: 20px;
+}
+
+.action-card {
+    background-color: #f8f9fa;
+    border: 1px solid #e9ecef;
+    padding: 25px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.3s ease;
+}
+
+.action-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    border-color: #007bff;
+}
+
+.action-card h4 {
+    margin: 0 0 10px 0;
+    font-size: 1.2em;
+    color: #0056b3;
+}
+
+.action-card p {
+    margin: 0;
+    font-size: 0.95em;
+    color: #666;
+}
+
+/* Para el panel de usuario */
+.content-placeholder {
+    background-color: #f8f9fa;
+    border: 1px dashed #ddd;
+    padding: 40px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.content-placeholder p {
+    font-size: 1.1em;
+    color: #777;
+    margin-top: 0;
+    margin-bottom: 20px;
+}
+
+/* --- ESTILOS PARA TABLAS DE DATOS --- */
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.data-table th,
+.data-table td {
+    padding: 12px 15px;
+    border: 1px solid #e0e0e0;
+    text-align: left;
+}
+
+.data-table thead tr {
+    background-color: #f8f9fa; /* Un fondo sutil para la cabecera */
+}
+
+.data-table th {
+    font-weight: 600;
+    color: #333;
+}
+
+.data-table tbody tr:nth-of-type(even) {
+    background-color: #fdfdfd; /* Filas con colores alternos para legibilidad */
+}
+
+.data-table tbody tr:hover {
+    background-color: #f1f1f1; /* Resaltado al pasar el mouse */
+}
+
+.actions-column {
+    width: 100px; /* Ancho fijo para la columna de acciones */
+    text-align: center;
+}
+
+.actions-cell {
+    text-align: center;
+    white-space: nowrap; /* Evita que los botones se partan en dos líneas */
+}
+
+/* --- BOTONES DE ICONOS PARA ACCIONES --- */
+.btn-icon {
+    display: inline-block;
+    padding: 8px 10px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-size: 16px;
+    margin: 0 4px;
+    transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+    transform: scale(1.1);
+}
+
+.btn-edit {
+    background-color: #e0efff;
+    color: #0056b3;
+}
+
+.btn-delete {
+    background-color: #ffe0e0;
+    color: #dc3545;
+}
+
+.dashboard-footer {
+    text-align: right;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid #e0e0e0;
+}

@@ -1,47 +1,62 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <title>Registro de Usuarios</title>
+    <title>${not empty usuarioAEditar ? 'Editar' : 'Registrar'} Usuario</title>
     <link rel="stylesheet" type="text/css" href="${pageContext.request.contextPath}/css/styles.css" >
+    <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 </head>
 <body>
-    <h1>Registro de Nuevo Usuario</h1>
-    
-    <%-- Mostrar mensajes --%>
-    <c:if test="${not empty mensaje}">
-        <div>${mensaje}</div>
-    </c:if>
-    <c:if test="${not empty error}">
-        <div>${error}</div>
-    </c:if>
-    
-    <div class="container"> 
-    	<form action="${pageContext.request.contextPath}/usuarios" method="post">
-	        <input type="hidden" name="action" value="registrar">
-	        
-	        <label>Nombre:</label>
-	        <input type="text" name="nombre" required><br>
-	        
-	        <label>Email:</label>
-	        <input type="email" name="email" required><br>
-	        
-	        <label>Contraseña:</label>
-	        <input type="password" name="password" required><br>
-	        
-	        <%-- Si tienes roles --%>
-	        <label>Rol:</label>
-	        <select name="rol">
-			    <option value="usuario">Usuario Normal</option>
-			    <option value="admin">Administrador</option>
-			</select>
-	        <div class="">
-		        <button class="btn-primary" type="submit">Registrar</button>
-		        <button onclick="history.back()" class="btn btn-secondary">Volver Atrás</button>
-	        </div>
-	        
-	    </form>
-    
-    </div>
+    <div class="form-container">
+         <h2>${not empty usuarioAEditar ? 'usuarioAEditar' : 'Registro de Nuevo'} Usuario</h2>
+        <p class="form-subtitle">Crea tu cuenta para acceder al sistema de reservas.</p>
+        
+        <form action="${pageContext.request.contextPath}/usuarios" method="post">
+        
+            <!-- LÓGICA CLAVE: La acción y el ID cambian según si estamos editando o no -->
+            <c:if test="${not empty usuarioAEditar}">
+                <!-- MODO EDICIÓN: La acción es 'actualizar' e incluimos el ID del usuario -->
+                <input type="hidden" name="action" value="actualizar">
+                <input type="hidden" name="id" value="${usuario.id}">
+            </c:if>
+            <c:if test="${empty usuarioAEditar}">
+                <!-- MODO REGISTRO: La acción es 'registrar' -->
+                <input type="hidden" name="action" value="registrar">
+            </c:if>
+            
+            <div class="form-group">
+                <label for="nombre">Nombre:</label>
+                <!-- Usamos el atributo 'value' para pre-rellenar el campo si el usuario existe -->
+                <input type="text" id="nombre" name="nombre" value="${usuarioAEditar.nombre}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" value="${usuarioAEditar.email}" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Contraseña:</label>
+                <!-- NUNCA pre-rellenes una contraseña. Es una mala práctica de seguridad. -->
+                <input type="password" id="password" name="password" placeholder="Dejar en blanco para no cambiar">
+            </div>
+            
+            <div class="form-group">
+                <label for="rol">Rol:</label>
+                <select id="rol" name="rol">
+                    <!-- Marcamos como 'selected' la opción que coincida con el rol del usuario -->
+                    <option value="usuario" ${!usuarioAEditar.rol ? 'selected' : ''}>Usuario Normal</option>
+                    <option value="admin" ${usuarioAEditar.rol ? 'selected' : ''}>Administrador</option>
+                </select>
+            </div>
+            
+            <div class="form-group button-group">
+                 
+                <button type="submit" class="btn-primary">${not empty usuarioAEditar ? 'Actualizar' : 'Registrar'}</button>
+                <a href="${pageContext.request.contextPath}/usuarios" class="btn-secondary">Cancelar</a>
+            </div>
+        </form>
+
+
 	    
 </body>
 </html>

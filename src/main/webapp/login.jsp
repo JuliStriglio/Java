@@ -9,7 +9,7 @@
 	    
 	</head>
 	<body>
-	    <div class="container">
+	    <div class="form-container">
 	        <h2>Iniciar Sesión</h2>
 	        <form action="login" method="post">
 	            <div class="form-group">
@@ -20,8 +20,10 @@
 	                <label for="password">Contraseña:</label>
 	                <input type="password" id="password" name="password" required>
 	            </div>
-	            <button class="btn-primary" type="submit">Entrar</button>
-	            <button onclick="history.back()" class="btn btn-secondary">Volver Atrás</button>
+	            <div class="form-group button-group">
+	            	<button class="btn-primary" type="submit">Entrar</button>
+	            	<a href="${pageContext.request.contextPath}/index.jsp" class="btn-secondary">Inicio</a>
+	            </div>
 	        </form>
 	        
 	        <!-- Mostrar mensaje de error si existe -->
