@@ -11,18 +11,23 @@ import java.util.List;
 public class InstalacionDAO {
 
 	 public void agregarInstalacion(Instalacion i) {
-	        String sql = "INSERT INTO instalacion (nombre, tipo, horaApertura, horaCierre, direccion, precioxhora) VALUES (?, ?, ?, ?)";
+	        String sql = "INSERT INTO instalaciones (nombre, tipo, horaApertura, horaCierre, direccion, precioxhora) VALUES (?, ?, ?, ?,?,?)";
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, i.getNombre());
+	            stmt.setString(2, i.getTipo());
+	            stmt.setTime(3, java.sql.Time.valueOf(i.getHoraApertura())); // LocalTime → SQL Time
+	            stmt.setTime(4, java.sql.Time.valueOf(i.getHoraCierre()));
+	            stmt.setString(5, i.getDireccion());
+	            stmt.setDouble(6, i.getPrecioxhora());
 	            stmt.executeUpdate();
 
 	            ResultSet rs = stmt.getGeneratedKeys();
 	            if (rs.next()) {
 	                i.setId(rs.getInt(1));
-	                System.out.println("Usuario agregado con ID: " + i.getId());
+	                System.out.println("Instalacion agregada con ID: " + i.getId());
 	            }
 
 	        } catch (SQLException e) {
@@ -32,7 +37,7 @@ public class InstalacionDAO {
 
 	    // Buscar por ID
 	    public Instalacion obtenerPorId(int id) {
-	        String sql = "SELECT * FROM instalacion WHERE id = ?";
+	        String sql = "SELECT * FROM instalaciones WHERE id = ?";
 	        Instalacion i = null;
 
 	        try (Connection conn = ConexionUtil.getConexion();
@@ -64,7 +69,7 @@ public class InstalacionDAO {
 	    // List
 	    public List<Instalacion> listarInstalacion() {
 	        List<Instalacion> lista = new ArrayList<>();
-	        String sql = "SELECT * FROM instalacion";
+	        String sql = "SELECT * FROM instalaciones";
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -80,6 +85,7 @@ public class InstalacionDAO {
 	                        rs.getString("direccion"),
 	                        rs.getDouble("precioxhora")
 	                );
+	                lista.add(i);
 	            }
 
 	        } catch (SQLException e) {
@@ -92,7 +98,7 @@ public class InstalacionDAO {
 	   
 	    // Update
 	    public void modificarInstalacion(Instalacion i) {
-	        String sql = "UPDATE instalacion SET nombre = ?, tipo = ?, horarios = ?, direccion = ?, precioxhora = ? WHERE id = ?";
+	        String sql = "UPDATE instalaciones SET nombre = ?, tipo = ?, horaApertura = ?, horaCierre = ?, direccion = ?, precioxhora = ? WHERE id = ?";
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -100,9 +106,10 @@ public class InstalacionDAO {
 	            stmt.setString(1, i.getNombre());
 	            stmt.setString(2, i.getTipo());
 	            stmt.setTime(3, Time.valueOf(i.getHoraApertura()));
-	            stmt.setTime(3, Time.valueOf(i.getHoraCierre()));// Convierte LocalTime a java.sql.Time
-	            stmt.setString(4, i.getDireccion());
-	            stmt.setDouble(5, i.getPrecioxhora());
+	            stmt.setTime(4, Time.valueOf(i.getHoraCierre()));// Convierte LocalTime a java.sql.Time
+	            stmt.setString(5, i.getDireccion());
+	            stmt.setDouble(6, i.getPrecioxhora());
+	            stmt.setInt(7, i.getId());
 
 	            stmt.executeUpdate();
 
@@ -113,7 +120,7 @@ public class InstalacionDAO {
 
 	    // Delete
 	    public void eliminarInstalacion(int id) {
-	        String sql = "DELETE FROM Instalacion WHERE id = ?";
+	        String sql = "DELETE FROM instalaciones WHERE id = ?";
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {

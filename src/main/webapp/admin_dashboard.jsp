@@ -44,6 +44,11 @@
                     <h4>Ver Reportes</h4>
                     <p>Generar estadísticas y reportes de uso.</p>
                 </a>
+                 <a href="${pageContext.request.contextPath}/instalaciones" class="action-card">
+                    <h4>Gestionar Instalaciones</h4>
+                    <p>Ver, editar y eliminar Instalaciones del sistema.</p>
+                </a>
+                
             </div>
             <!-- Aquí irá el resto del contenido de administración, como tablas, etc. -->
         </main>
