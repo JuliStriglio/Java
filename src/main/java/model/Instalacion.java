@@ -4,14 +4,14 @@ public class Instalacion {
 	
 	private int id;
 	private String nombre;
-	private String tipo;
+	private TipoInstalacion tipo;
 	private LocalTime horaApertura;
 	private LocalTime horaCierre;
 	private String direccion;
 	private Double precioxhora;
 
 	 // Constructor SIN id (para crear nuevos)
-	public Instalacion(String nombre, String tipo, LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
+	public Instalacion(String nombre, TipoInstalacion tipo, LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
 		super();
 		this.nombre = nombre;
 		this.tipo = tipo;
@@ -22,7 +22,7 @@ public class Instalacion {
 	
 	
 	// Contructor CON id (para leer en la bd)
-	public Instalacion(int id, String nombre, String tipo,LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
+	public Instalacion(int id, String nombre, TipoInstalacion tipo,LocalTime horaApertura,  LocalTime horaCierre, String direccion, Double precioxhora) {
 		super();
 		this.id = id;
 		this.nombre = nombre;
@@ -50,11 +50,11 @@ public class Instalacion {
 		this.nombre = nombre;
 	}
 
-	public String getTipo() {
+	public TipoInstalacion getTipo() {
 		return tipo;
 	}
 
-	public void setTipo(String tipo) {
+	public void setTipo(TipoInstalacion tipo) {
 		this.tipo = tipo;
 	}
 

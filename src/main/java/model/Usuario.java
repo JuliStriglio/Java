@@ -9,10 +9,10 @@ public class Usuario {
 	private Boolean rol;
 	
 	 // Constructor SIN id (para crear nuevos)
-    public Usuario(String nombre, String email, String contraseña, Boolean rol) {
+    public Usuario(String nombre, String email, String password, Boolean rol) {
         this.nombre = nombre;
         this.email = email;
-        this.password = contraseña;
+        this.password = password;
         this.rol = rol;
     }
     
@@ -21,11 +21,11 @@ public class Usuario {
     }
 
     // Constructor CON id (para leer de la DB)
-    public Usuario(int id, String nombre, String email, String contraseña, Boolean rol) {
+    public Usuario(int id, String nombre, String email, String password, Boolean rol) {
         this.id = id;
         this.nombre = nombre;
         this.email = email;
-        this.password = contraseña;
+        this.password = password;
         this.rol = rol;
     }
     
