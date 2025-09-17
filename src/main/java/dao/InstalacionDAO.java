@@ -1,6 +1,7 @@
 package dao;
 
 import model.Instalacion;
+import model.TipoInstalacion;
 import utils.ConexionUtil;
 
 import java.sql.*;
@@ -16,7 +17,7 @@ public class InstalacionDAO {
 	             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
 	            stmt.setString(1, i.getNombre());
-	            stmt.setString(2, i.getTipo());
+	            stmt.setInt(2, i.getTipo().getId());
 	            stmt.setTime(3, java.sql.Time.valueOf(i.getHoraApertura())); // LocalTime → SQL Time
 	            stmt.setTime(4, java.sql.Time.valueOf(i.getHoraCierre()));
 	            stmt.setString(5, i.getDireccion());
@@ -46,10 +47,12 @@ public class InstalacionDAO {
 	            ResultSet rs = stmt.executeQuery();
 
 	            if (rs.next()) {
+	            	
+	            	TipoInstalacion tipo = new TipoInstalacion(rs.getInt("tipo"));
 	                i = new Instalacion(
 	                        rs.getInt("id"),
 	                        rs.getString("nombre"),
-	                        rs.getString("tipo"),
+	                        tipo,
 	                        rs.getTime("horaApertura").toLocalTime(),
 	                        rs.getTime("horaCierre").toLocalTime(),
 	                        rs.getString("direccion"),
@@ -75,10 +78,12 @@ public class InstalacionDAO {
 	             ResultSet rs = stmt.executeQuery()) {
 
 	            while (rs.next()) {
+	
+	            	TipoInstalacion tipo = new TipoInstalacion (rs.getInt("id"),rs.getString("nombre"));
 	                Instalacion i = new Instalacion(
 	                        rs.getInt("id"),
 	                        rs.getString("nombre"),
-	                        rs.getString("tipo"),
+	                        tipo,
 	                        rs.getTime("horaApertura").toLocalTime(),
 	                        rs.getTime("horaCierre").toLocalTime(),
 	                        rs.getString("direccion"),
@@ -103,7 +108,7 @@ public class InstalacionDAO {
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
 	            stmt.setString(1, i.getNombre());
-	            stmt.setString(2, i.getTipo());
+	            stmt.setInt(2, i.getTipo().getId());
 	            stmt.setTime(3, Time.valueOf(i.getHoraApertura()));
 	            stmt.setTime(4, Time.valueOf(i.getHoraCierre()));// Convierte LocalTime a java.sql.Time
 	            stmt.setString(5, i.getDireccion());

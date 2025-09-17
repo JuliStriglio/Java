@@ -48,6 +48,10 @@
                     <h4>Gestionar Instalaciones</h4>
                     <p>Ver, editar y eliminar Instalaciones del sistema.</p>
                 </a>
+                 <a href="${pageContext.request.contextPath}/tipoInstalaciones" class="action-card">
+                    <h4>Gestionar Tipo Instalaciones</h4>
+                    <p>Ver, editar y eliminar Tipo Instalaciones del sistema.</p>
+                </a>
                 
             </div>
             <!-- Aquí irá el resto del contenido de administración, como tablas, etc. -->

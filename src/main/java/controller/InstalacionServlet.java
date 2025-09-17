@@ -8,6 +8,7 @@ import java.sql.SQLException;
 import java.util.List;
 import dao.InstalacionDAO;
 import model.Instalacion;
+import model.TipoInstalacion;
 import java.time.LocalTime;
 
 
@@ -124,7 +125,10 @@ public class InstalacionServlet extends HttpServlet {
             throws SQLException, IOException {
        
         String nombre = request.getParameter("nombre");
-        String tipo = request.getParameter("tipo");
+        
+        int tipoId = Integer.parseInt(request.getParameter("nombre"));
+        TipoInstalacion tipo = new TipoInstalacion(tipoId);
+        
         String horaAperturaStr = request.getParameter("horaApertura"); // String
         LocalTime horaApertura = null;
 
@@ -145,8 +149,7 @@ public class InstalacionServlet extends HttpServlet {
             precioxhora = Double.parseDouble(precioStr); // convertís a Double
         } 
         
-      
-
+ 
        
         Instalacion nuevaInstalacion = new Instalacion(nombre, tipo, horaApertura, horaCierre, direccion, precioxhora);
         
@@ -161,7 +164,10 @@ public class InstalacionServlet extends HttpServlet {
        
         int id = Integer.parseInt(request.getParameter("id"));
         String nombre = request.getParameter("nombre");
-        String tipo = request.getParameter("tipo");
+        
+        int tipoId = Integer.parseInt(request.getParameter("nombre"));
+        TipoInstalacion tipo = new TipoInstalacion(tipoId);
+        
         String horaAperturaStr = request.getParameter("horaApertura"); // String
         LocalTime horaApertura = null;
 
@@ -183,7 +189,7 @@ public class InstalacionServlet extends HttpServlet {
         } 
 
 
-       
+        
         Instalacion instalacion = new Instalacion(id, nombre, tipo, horaApertura, horaCierre, direccion, precioxhora);
 
         
