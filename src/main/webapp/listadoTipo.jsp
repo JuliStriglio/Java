@@ -31,7 +31,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <c:forEach items="${tipoInstalaciones}" var="tipoInstalacion">
+                    <c:forEach items="${tiposInstalaciones}" var="tipoInstalacion">
                         <tr>
                             <td>${tipoInstalacion.id}</td>
                             <td>${tipoInstalacion.nombre}</td>

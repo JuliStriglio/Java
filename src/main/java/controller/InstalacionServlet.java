@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
 import dao.InstalacionDAO;
+import dao.TipoInstalacionDAO;
 import model.Instalacion;
 import model.TipoInstalacion;
 import java.time.LocalTime;
@@ -16,6 +17,7 @@ import java.time.LocalTime;
 public class InstalacionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private InstalacionDAO instalacionDAO;
+    private TipoInstalacionDAO tipoInstalacionDAO = new TipoInstalacionDAO();
     
     public void init() {
         instalacionDAO = new InstalacionDAO();
@@ -90,6 +92,9 @@ public class InstalacionServlet extends HttpServlet {
     private void mostrarFormularioVacio(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
     	
+    	List<TipoInstalacion> listaTipos = tipoInstalacionDAO.listarTipo();
+    	request.setAttribute("tiposInstalaciones", listaTipos);
+    	
         RequestDispatcher dispatcher = request.getRequestDispatcher("/registroInstalacion.jsp");
         
         dispatcher.forward(request, response);
@@ -126,8 +131,9 @@ public class InstalacionServlet extends HttpServlet {
        
         String nombre = request.getParameter("nombre");
         
-        int tipoId = Integer.parseInt(request.getParameter("nombre"));
-        TipoInstalacion tipo = new TipoInstalacion(tipoId);
+        int tipoId = Integer.parseInt(request.getParameter("tipoId"));
+        TipoInstalacion tipo = new TipoInstalacion();
+        tipo.setId(tipoId);
         
         String horaAperturaStr = request.getParameter("horaApertura"); // String
         LocalTime horaApertura = null;

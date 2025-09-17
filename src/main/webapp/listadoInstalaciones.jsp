@@ -38,7 +38,7 @@
                         <tr>
                             <td>${instalacion.id}</td>
                             <td>${instalacion.nombre}</td>
-                            <td>${instalacion.tipo}</td>
+                            <td>${instalacion.tipo.nombre}</td>
                             <td>${instalacion.horaApertura}</td>
                             <td>${instalacion.horaCierre}</td>
                             <td>${instalacion.direccion}</td>

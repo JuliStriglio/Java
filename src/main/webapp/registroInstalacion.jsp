@@ -30,7 +30,15 @@
             
             <div class="form-group">
                 <label for="tipo">Tipo:</label>
-                <input type="text" id="tipo" name="tipo" value="${instalacionAEditar.tipo}" required>
+                <select id="tipo" name="tipoId" required>
+               	 <c:forEach items="${tiposInstalaciones}" var="tipo">
+                    <option value="${tipo.id}"
+                        <c:if test="${instalacionAEditar != null && instalacionAEditar.tipo.id == tipo.id}">selected</c:if>>
+                        ${tipo.nombre}
+                    </option>
+                </c:forEach>
+            </select>
+
             </div>
             
             <div class="form-group">

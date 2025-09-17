@@ -71,7 +71,14 @@ public class InstalacionDAO {
 	    // List
 	    public List<Instalacion> listarInstalacion() {
 	        List<Instalacion> lista = new ArrayList<>();
-	        String sql = "SELECT * FROM instalaciones";
+	        String sql = "SELECT " +
+	                 "i.id AS ins_id, i.nombre AS ins_nombre, i.horaApertura, i.horaCierre, " +
+	                 "i.direccion, i.precioxhora, " +
+	                 "t.id AS tipo_id, t.nombre AS tipo_nombre, t.descripcion AS tipo_desc " +
+	                 "FROM instalaciones i " +
+	                 "JOIN tipoinstalaciones t ON i.tipo = t.id";
+	        
+
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -79,10 +86,14 @@ public class InstalacionDAO {
 
 	            while (rs.next()) {
 	
-	            	TipoInstalacion tipo = new TipoInstalacion (rs.getInt("id"),rs.getString("nombre"));
+	            	TipoInstalacion tipo = new TipoInstalacion ();
+	            	tipo.setId(rs.getInt("tipo_id"));
+	            	tipo.setNombre(rs.getString("tipo_nombre"));
+	            	tipo.setDescripcion(rs.getString("tipo_desc"));
+	            	
 	                Instalacion i = new Instalacion(
-	                        rs.getInt("id"),
-	                        rs.getString("nombre"),
+	                        rs.getInt("ins_id"),
+	                        rs.getString("ins_nombre"),
 	                        tipo,
 	                        rs.getTime("horaApertura").toLocalTime(),
 	                        rs.getTime("horaCierre").toLocalTime(),
