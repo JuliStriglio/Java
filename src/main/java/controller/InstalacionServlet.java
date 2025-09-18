@@ -74,6 +74,10 @@ public class InstalacionServlet extends HttpServlet {
         // Poner el usuario en el request para que el formulario lo pueda leer
         request.setAttribute("instalacionAEditar", instalacionExistente);
         
+        //Para que aparezca el select 
+        List<TipoInstalacion> listaTipos = tipoInstalacionDAO.listarTipo();
+        request.setAttribute("tiposInstalaciones", listaTipos);
+        
         // Reenviar al mismo formulario que usas para registrar, pero ahora estará lleno
         RequestDispatcher dispatcher = request.getRequestDispatcher("registroInstalacion.jsp");
         dispatcher.forward(request, response);
@@ -171,7 +175,7 @@ public class InstalacionServlet extends HttpServlet {
         int id = Integer.parseInt(request.getParameter("id"));
         String nombre = request.getParameter("nombre");
         
-        int tipoId = Integer.parseInt(request.getParameter("nombre"));
+        int tipoId = Integer.parseInt(request.getParameter("tipoId"));
         TipoInstalacion tipo = new TipoInstalacion(tipoId);
         
         String horaAperturaStr = request.getParameter("horaApertura"); // String
