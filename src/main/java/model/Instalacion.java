@@ -33,6 +33,7 @@ public class Instalacion {
 		this.precioxhora = precioxhora;
 	}
 
+	public Instalacion() {}
 
 	public int getId() {
 		return id;
