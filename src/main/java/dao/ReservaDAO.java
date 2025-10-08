@@ -31,7 +31,7 @@ public class ReservaDAO {
 		            ResultSet rs = stmt.getGeneratedKeys();
 		            if (rs.next()) {
 		                r.setId(rs.getInt(1));
-		                System.out.println("Instalacion agregada con ID: " + r.getId());
+		                System.out.println("Reserva agregada con ID: " + r.getId());
 		            }
 
 		        } catch (SQLException e) {

@@ -6,7 +6,7 @@ public class Usuario {
 	private String nombre;
 	private String email;
 	private String password;
-	private Boolean rol;
+	private Boolean rol; // false = usuario, true=admin 
 	
 	 // Constructor SIN id (para crear nuevos)
     public Usuario(String nombre, String email, String password, Boolean rol) {

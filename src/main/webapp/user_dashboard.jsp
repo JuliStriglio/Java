@@ -33,7 +33,7 @@
             <h3>Tus Reservas</h3>
             <div class="content-placeholder">
                 <p>Próximamente, aquí podrás ver y gestionar todas tus reservas activas.</p>
-                <a href="#" class="btn-primary">Crear Nueva Reserva</a>
+                <a href="${pageContext.request.contextPath}/reservas" class="btn-primary">Crear Nueva Reserva</a>
             </div>
             <!-- Aquí irá el resto del contenido específico para el usuario, como tablas de reservas, etc. -->
         </main>

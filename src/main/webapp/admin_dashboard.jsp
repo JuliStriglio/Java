@@ -36,7 +36,7 @@
                     <h4>Gestionar Usuarios</h4>
                     <p>Ver, editar y eliminar usuarios del sistema.</p>
                 </a>
-                <a href="#" class="action-card">
+                <a href="${pageContext.request.contextPath}/reservas" class="action-card">
                     <h4>Gestionar Reservas</h4>
                     <p>Visualizar y administrar todas las reservas.</p>
                 </a>

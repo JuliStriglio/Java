@@ -5,24 +5,25 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import dao.InstalacionDAO;
-import dao.ReservaDAO;
 import dao.UsuarioDAO;
+import dao.ReservaDAO;
 import model.Instalacion;
 import model.EstadoReserva;
 import model.Reserva;
-import model.TipoInstalacion;
 import model.Usuario;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
 
 @WebServlet("/reservas") 
-public class ReservaServlet {
+public class ReservaServlet extends HttpServlet  {
 
     private static final long serialVersionUID = 1L;
     private ReservaDAO reservaDAO;
+    private UsuarioDAO usuarioDAO = new UsuarioDAO();
     private InstalacionDAO instalacionDAO = new InstalacionDAO();
 
     public void init() {
@@ -103,10 +104,23 @@ public class ReservaServlet {
     private void mostrarFormularioVacio(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
     	
+    	//paso usuario logueado
+        HttpSession session = request.getSession();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+        request.setAttribute("usuario", usuario);
+    	
+        // Lista de usuarios
+    	List<Usuario> listaUsuarios = usuarioDAO.listarUsuarios();
+    	request.setAttribute("usuarios", listaUsuarios);
+        
+    	//paso instalaciones 
     	List<Instalacion> listaInstalaciones = instalacionDAO.listarInstalacion();
     	request.setAttribute("instalaciones", listaInstalaciones);
     	
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/registroReservas.jsp");
+
+        
+        
+        RequestDispatcher dispatcher = request.getRequestDispatcher("/registroReserva.jsp");
         
         dispatcher.forward(request, response);
     }
@@ -143,12 +157,10 @@ public class ReservaServlet {
         // 🧍‍♂️ 1. Obtener el usuario logueado desde la sesión
         HttpSession session = request.getSession();
         Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+
         
-        if (usuarioLogueado == null) {
-            // Si no hay usuario, redirigir al login
-            response.sendRedirect("login.jsp");
-            return;
-        }
+
+        
         
         // 🏟️ 2. Obtener datos del formulario JSP
         int idInstalacion = Integer.parseInt(request.getParameter("idInstalacion"));
@@ -157,6 +169,16 @@ public class ReservaServlet {
         LocalTime horaFin = LocalTime.parse(request.getParameter("horaFin"));
         double monto = Double.parseDouble(request.getParameter("monto"));
         
+        int usuarioId;
+        if(usuarioLogueado.getRol()) {  
+            // El admin puede elegir cualquier usuario
+            usuarioId = Integer.parseInt(request.getParameter("id"));
+        } else {
+            // Usuario común solo puede agregarse a sí mismo
+            usuarioId = usuarioLogueado.getId();
+        }
+        Usuario usuarioSeleccionado = usuarioDAO.obtenerPorId(usuarioId);
+        
         // 🧩 3. Crear objetos relacionados
         Instalacion instalacion = new Instalacion();
         instalacion.setId(idInstalacion);
@@ -164,7 +186,7 @@ public class ReservaServlet {
         // 📌 4. Definir el estado inicial (por ejemplo, "PENDIENTE")
         EstadoReserva estado = EstadoReserva.PENDIENTE;
         
-        Reserva nuevaReserva = new Reserva (usuarioLogueado, instalacion, fecha, horaInicio, horaFin, estado, monto);
+        Reserva nuevaReserva = new Reserva (usuarioSeleccionado, instalacion, fecha, horaInicio, horaFin, estado, monto);
         
         reservaDAO.agregarReserva(nuevaReserva); 
         response.sendRedirect(request.getContextPath() + "/reservas?action=listar&registro=exitoso");
