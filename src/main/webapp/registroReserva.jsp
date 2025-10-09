@@ -45,10 +45,10 @@
             
             <div class="form-group">
                 <label for="ins">Instalacion:</label>
-                <select id="ins" name="insId" required>
+                <select id="ins" name="instalacion" required>
                	 <c:forEach items="${instalaciones}" var="ins">
                     <option value="${ins.id}"
-                        <c:if test="${reservaAEditar != null && reservaAEditar.ins.id == ins.id}">selected</c:if>>
+                        <c:if test="${reservaAEditar != null && reservaAEditar.ins.id == instalacion.id}">selected</c:if>>
                         ${ins.nombre}
                     </option>
                 </c:forEach>
@@ -71,6 +71,17 @@
                 <label for="horaFin">Hora Fin:</label>
                 <input type="time" id="horaFin" name="horaFin" value="${reservaAEditar.horaFin}" required >
             </div>
+            
+            <c:if test="${usuarioLogueado.rol}">
+    <div class="form-group">
+        <label for="estado">Estado:</label>
+        <select name="estado" id="estado">
+            <option value="PENDIENTE" ${reservaAEditar.estado == 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
+            <option value="ACTIVA" ${reservaAEditar.estado == 'ACTIVA' ? 'selected' : ''}>Activa</option>
+            <option value="CANCELADA" ${reservaAEditar.estado == 'CANCELADA' ? 'selected' : ''}>Cancelada</option>
+        </select>
+    </div>
+</c:if>
             
             <div class="form-group">
                 <label for="monto">Monto:</label>

@@ -12,19 +12,18 @@ import java.util.List;
 public class ReservaDAO {
 
 		 public void agregarReserva(Reserva r) {
-		        String sql = "INSERT INTO reservas (usuario, instalacion, fecha, horaInicio, horaFin, estado, monto) VALUES (?, ?, ?, ?,?,?,?)";
+		        String sql = "INSERT INTO reservas (usuario, instalacion, fecha, horaInicio, horaFin,estado, monto) VALUES (?, ?, ?, ?,?,?,?)";
 
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 		        	
 		        	stmt.setInt(1, r.getUsuario().getId());
 		        	stmt.setInt(2, r.getInstalacion().getId());
-		        	stmt.setInt(3, r.getUsuario().getId());
-		        	stmt.setDate(4, java.sql.Date.valueOf(r.getFecha()));
-		        	stmt.setTime(5, java.sql.Time.valueOf(r.getHoraInicio()));
-		        	stmt.setTime(6, java.sql.Time.valueOf(r.getHoraFin()));
-		        	stmt.setString(7, r.getEstado().name());
-		        	stmt.setDouble(8, r.getMonto());
+		        	stmt.setDate(3, java.sql.Date.valueOf(r.getFecha()));
+		        	stmt.setTime(4, java.sql.Time.valueOf(r.getHoraInicio()));
+		        	stmt.setTime(5, java.sql.Time.valueOf(r.getHoraFin()));
+		        	stmt.setString(6, r.getEstado().name()); // 👉 Ya trae "PENDIENTE"
+		        	stmt.setDouble(7, r.getMonto());
 		        	
 		            stmt.executeUpdate();
 

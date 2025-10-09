@@ -5,7 +5,6 @@ import javax.servlet.http.*;
 import javax.servlet.annotation.*;
 import java.io.IOException;
 import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.List;
 import dao.InstalacionDAO;
 import dao.UsuarioDAO;
@@ -156,14 +155,14 @@ public class ReservaServlet extends HttpServlet  {
     	
         // 🧍‍♂️ 1. Obtener el usuario logueado desde la sesión
         HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuarioLogueado");
+        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuario");
 
         
 
         
         
         // 🏟️ 2. Obtener datos del formulario JSP
-        int idInstalacion = Integer.parseInt(request.getParameter("idInstalacion"));
+        int idInstalacion = Integer.parseInt(request.getParameter("instalacion"));
         LocalDate fecha = LocalDate.parse(request.getParameter("fecha"));
         LocalTime horaInicio = LocalTime.parse(request.getParameter("horaInicio"));
         LocalTime horaFin = LocalTime.parse(request.getParameter("horaFin"));
@@ -172,7 +171,7 @@ public class ReservaServlet extends HttpServlet  {
         int usuarioId;
         if(usuarioLogueado.getRol()) {  
             // El admin puede elegir cualquier usuario
-            usuarioId = Integer.parseInt(request.getParameter("id"));
+            usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
         } else {
             // Usuario común solo puede agregarse a sí mismo
             usuarioId = usuarioLogueado.getId();
@@ -184,9 +183,9 @@ public class ReservaServlet extends HttpServlet  {
         instalacion.setId(idInstalacion);
         
         // 📌 4. Definir el estado inicial (por ejemplo, "PENDIENTE")
-        EstadoReserva estado = EstadoReserva.PENDIENTE;
+        //EstadoReserva estado = EstadoReserva.PENDIENTE; LO HAGO EN EL CONSTRUCTOR
         
-        Reserva nuevaReserva = new Reserva (usuarioSeleccionado, instalacion, fecha, horaInicio, horaFin, estado, monto);
+        Reserva nuevaReserva = new Reserva (usuarioSeleccionado, instalacion, fecha, horaInicio, horaFin, monto);
         
         reservaDAO.agregarReserva(nuevaReserva); 
         response.sendRedirect(request.getContextPath() + "/reservas?action=listar&registro=exitoso");
@@ -197,6 +196,49 @@ public class ReservaServlet extends HttpServlet  {
     private void actualizarReserva(HttpServletRequest request, HttpServletResponse response) 
             throws SQLException, IOException {
     	
+        HttpSession session = request.getSession();
+        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuario");
+        
+        if (usuarioLogueado == null) {
+            response.sendRedirect("login.jsp");
+            return;
+        }
+        
+        int id = Integer.parseInt(request.getParameter("id"));
+        Reserva reservaExistente = reservaDAO.obtenerPorId(id);
+        
+        if (reservaExistente == null) {
+            response.sendRedirect(request.getContextPath() + "/reservas?action=listar&error=no_existe");
+            return;
+        }
+        
+        int idInstalacion = Integer.parseInt(request.getParameter("instalacion"));
+        LocalDate fecha = LocalDate.parse(request.getParameter("fecha"));
+        LocalTime horaInicio = LocalTime.parse(request.getParameter("horaInicio"));
+        LocalTime horaFin = LocalTime.parse(request.getParameter("horaFin"));
+        double monto = Double.parseDouble(request.getParameter("monto"));
+        
+        Instalacion instalacion = new Instalacion();
+        instalacion.setId(idInstalacion);
+    	
+        reservaExistente.setInstalacion(instalacion);
+        reservaExistente.setFecha(fecha);
+        reservaExistente.setHoraInicio(horaInicio);
+        reservaExistente.setHoraFin(horaFin);
+        reservaExistente.setMonto(monto);
+        
+        // Admin cambia el estado
+        if (usuarioLogueado.getRol()) {
+            try {
+                EstadoReserva nuevoEstado = EstadoReserva.valueOf(request.getParameter("estado"));
+                reservaExistente.setEstado(nuevoEstado);
+            } catch (Exception e) {
+                // si no viene estado o es inválido, lo dejamos igual
+            }
+        }
+        
+        reservaDAO.modificarReserva(reservaExistente);
+        response.sendRedirect(request.getContextPath() + "/reservas?action=listar&actualizacion=exitosa");
 
   /*      int id = Integer.parseInt(request.getParameter("id"));
         
