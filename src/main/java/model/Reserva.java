@@ -87,4 +87,13 @@ public class Reserva {
     public void setMonto(Double monto) {
         this.monto = monto;
     }
+    
+    public double calcularMonto() {
+        long horas = java.time.Duration.between(horaInicio, horaFin).toHours();
+        if (horas < 1) {
+            horas = 1; // mínimo 1 hora
+        }
+        return instalacion.getPrecioxhora() * horas;
+    }
+    
 }

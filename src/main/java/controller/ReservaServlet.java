@@ -3,6 +3,7 @@ package controller;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.*;
+import java.time.format.DateTimeParseException;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.List;
@@ -145,52 +146,82 @@ public class ReservaServlet extends HttpServlet  {
                     break;
             }
         } catch (SQLException e) {
-           
+        	  e.printStackTrace();
             throw new ServletException("Error en la base de datos", e);
         }
     }
 
     private void registrarReserva(HttpServletRequest request, HttpServletResponse response) 
             throws SQLException, IOException {
-    	
-        // 🧍‍♂️ 1. Obtener el usuario logueado desde la sesión
+
         HttpSession session = request.getSession();
-        Usuario usuarioLogueado = (Usuario) session.getAttribute("usuario");
+        Usuario usuarioLogeado = (Usuario) session.getAttribute("usuario");
 
-        
-
-        
-        
-        // 🏟️ 2. Obtener datos del formulario JSP
-        int idInstalacion = Integer.parseInt(request.getParameter("instalacion"));
-        LocalDate fecha = LocalDate.parse(request.getParameter("fecha"));
-        LocalTime horaInicio = LocalTime.parse(request.getParameter("horaInicio"));
-        LocalTime horaFin = LocalTime.parse(request.getParameter("horaFin"));
-        double monto = Double.parseDouble(request.getParameter("monto"));
-        
-        int usuarioId;
-        if(usuarioLogueado.getRol()) {  
-            // El admin puede elegir cualquier usuario
-            usuarioId = Integer.parseInt(request.getParameter("usuarioId"));
-        } else {
-            // Usuario común solo puede agregarse a sí mismo
-            usuarioId = usuarioLogueado.getId();
+        if (usuarioLogeado == null) {
+            response.sendRedirect(request.getContextPath() + "/login.jsp");
+            return;
         }
-        Usuario usuarioSeleccionado = usuarioDAO.obtenerPorId(usuarioId);
-        
-        // 🧩 3. Crear objetos relacionados
-        Instalacion instalacion = new Instalacion();
-        instalacion.setId(idInstalacion);
-        
-        // 📌 4. Definir el estado inicial (por ejemplo, "PENDIENTE")
-        //EstadoReserva estado = EstadoReserva.PENDIENTE; LO HAGO EN EL CONSTRUCTOR
-        
-        Reserva nuevaReserva = new Reserva (usuarioSeleccionado, instalacion, fecha, horaInicio, horaFin, monto);
-        
-        reservaDAO.agregarReserva(nuevaReserva); 
-        response.sendRedirect(request.getContextPath() + "/reservas?action=listar&registro=exitoso");
-        
+
+        try {
+            // 1️⃣ Obtener datos del formulario
+            int idInstalacion = Integer.parseInt(request.getParameter("instalacion"));
+            LocalDate fecha = LocalDate.parse(request.getParameter("fecha"));
+            LocalTime horaInicio = LocalTime.parse(request.getParameter("horaInicio"));
+            LocalTime horaFin = LocalTime.parse(request.getParameter("horaFin"));
+
+            // 2️⃣ Validar que la fecha no haya pasado
+            if (fecha.isBefore(LocalDate.now())) {
+                response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?error=fecha_pasada");
+                return;
+            }
+
+            // 3️⃣ Validar que horaFin sea después de horaInicio y duración mínima 1 hora
+            long duracionMinutos = java.time.Duration.between(horaInicio, horaFin).toMinutes();
+            if (duracionMinutos < 60) {
+                response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?error=duracion_minima");
+                return;
+            }
+
+            // 4️⃣ Obtener usuario (admin puede elegir, usuario normal solo él mismo)
+            int usuarioId = usuarioLogeado.getId();
+            if (usuarioLogeado.getRol()) { // admin
+                String usuarioParam = request.getParameter("usuarioId");
+                if (usuarioParam != null && !usuarioParam.isEmpty()) {
+                    usuarioId = Integer.parseInt(usuarioParam);
+                }
+            }
+            Usuario usuarioSeleccionado = usuarioDAO.obtenerPorId(usuarioId);
+
+            // 5️⃣ Obtener instalación y calcular monto
+            Instalacion instalacion = instalacionDAO.obtenerPorId(idInstalacion);
+            if (instalacion == null) {
+                response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?error=instalacion_invalida");
+                return;
+            }
+            double montoCalculado = (duracionMinutos / 60.0) * instalacion.getPrecioxhora();
+
+            // 6️⃣ Verificar que la instalación esté disponible
+            if (!reservaDAO.estaDisponible(idInstalacion, fecha, horaInicio, horaFin)) {
+                response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?error=no_disponible");
+                return;
+            }
+
+            // 7️⃣ Crear reserva y guardarla
+            Reserva nuevaReserva = new Reserva(usuarioSeleccionado, instalacion, fecha, horaInicio, horaFin, montoCalculado);
+            reservaDAO.agregarReserva(nuevaReserva);
+
+            // ✅ Redirigir con éxito
+            response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?exito=1");
+
+        } catch (NumberFormatException | java.time.format.DateTimeParseException e) {
+            // Si hubo un error en parsing de número o fecha/hora
+            e.printStackTrace();
+            response.sendRedirect(request.getContextPath() + "/registroReserva.jsp?error=formato_invalido");
+        }
     }
+    
+    
+
      
 
     private void actualizarReserva(HttpServletRequest request, HttpServletResponse response) 

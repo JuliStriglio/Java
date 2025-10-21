@@ -6,6 +6,8 @@ import model.Usuario;
 import model.EstadoReserva;
 import utils.ConexionUtil;
 import java.sql.*;
+import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -165,6 +167,34 @@ public class ReservaDAO {
 		            e.printStackTrace();
 		        }
 		    }
+		    
+		    public boolean estaDisponible(int idInstalacion, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin) throws SQLException {
+		        String sql = "SELECT COUNT(*) FROM reservas WHERE instalacion = ? AND fecha = ? "
+		                   + "AND ((horaInicio < ? AND horaFin > ?) OR "
+		                   + "(horaInicio < ? AND horaFin > ?) OR "
+		                   + "(horaInicio >= ? AND horaInicio < ?))";
+
+		        try (Connection conn = ConexionUtil.getConexion();
+		             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		            
+		            stmt.setInt(1, idInstalacion);
+		            stmt.setDate(2, java.sql.Date.valueOf(fecha));
+		            stmt.setTime(3, java.sql.Time.valueOf(horaFin));
+		            stmt.setTime(4, java.sql.Time.valueOf(horaInicio));
+		            stmt.setTime(5, java.sql.Time.valueOf(horaInicio));
+		            stmt.setTime(6, java.sql.Time.valueOf(horaFin));
+		            stmt.setTime(7, java.sql.Time.valueOf(horaInicio));
+		            stmt.setTime(8, java.sql.Time.valueOf(horaFin));
+
+		            try (ResultSet rs = stmt.executeQuery()) {
+		                if (rs.next()) {
+		                    return rs.getInt(1) == 0; // true si no hay reservas superpuestas
+		                }
+		            }
+		        }
+		        return false;
+		    }
+		    
 	}
 
 

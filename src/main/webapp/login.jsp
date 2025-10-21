@@ -25,6 +25,12 @@
 	            	<a href="${pageContext.request.contextPath}/index.jsp" class="btn-secondary">Inicio</a>
 	            </div>
 	        </form>
+	        <% String registro = request.getParameter("registro"); %>
+				<% if ("exitoso".equals(registro)) { %>
+				    <div style="color: green; font-weight: bold; margin-bottom: 10px;">
+				        ¡Registro exitoso! Ahora podés iniciar sesión.
+				    </div>
+				<% } %>
 	        
 	        <!-- Mostrar mensaje de error si existe -->
 	        <%

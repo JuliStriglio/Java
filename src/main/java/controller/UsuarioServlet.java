@@ -9,17 +9,26 @@ import java.util.List;
 import dao.UsuarioDAO;
 import model.Usuario;
 
-
-@WebServlet("/usuarios") 
+@WebServlet("/usuarios")
 public class UsuarioServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
     private UsuarioDAO usuarioDAO;
-    
+
+    @Override
     public void init() {
         usuarioDAO = new UsuarioDAO();
     }
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @Override
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        HttpSession session = request.getSession(false);
+        Usuario usuarioLogeado = (session != null) ? (Usuario) session.getAttribute("usuario") : null;
+        boolean esAdmin = (usuarioLogeado != null && usuarioLogeado.getRol());
+
+        request.setAttribute("esAdmin", esAdmin);
+
         String action = request.getParameter("action");
         if (action == null) {
             action = "listar";
@@ -27,133 +36,173 @@ public class UsuarioServlet extends HttpServlet {
 
         try {
             switch (action) {
-            	case "mostrarFormulario": // <-- AÑADIR ESTE CASO
-	                mostrarFormularioVacio(request, response);
-	                break;
+                case "mostrarFormulario":
+                    mostrarFormularioVacio(request, response);
+                    break;
+
                 case "cargar":
+                    if (usuarioLogeado == null) {
+                        response.sendRedirect(request.getContextPath() + "/login.jsp");
+                        return;
+                    }
                     cargarUsuarioParaEditar(request, response);
                     break;
+
                 case "eliminar":
+                    if (!esAdmin) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, 
+                            "Acceso denegado. Solo administradores pueden eliminar usuarios.");
+                        return;
+                    }
                     eliminarUsuario(request, response);
                     break;
+
                 case "listar":
-                default:
+                    if (!esAdmin) {
+                        response.sendError(HttpServletResponse.SC_FORBIDDEN, 
+                            "Acceso denegado. Solo administradores pueden listar usuarios.");
+                        return;
+                    }
                     listarUsuarios(request, response);
+                    break;
+
+                default:
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, 
+                        "Acción no válida: " + action);
                     break;
             }
         } catch (SQLException ex) {
-            throw new ServletException(ex);
+            throw new ServletException("Error al procesar la acción: " + action, ex);
         }
     }
-    
-    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response) 
+
+    private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-    	
+
         List<Usuario> listaUsuarios = usuarioDAO.listarUsuarios();
-        
         request.setAttribute("usuarios", listaUsuarios);
-        
         RequestDispatcher dispatcher = request.getRequestDispatcher("listadoUsuarios.jsp");
-        
         dispatcher.forward(request, response);
     }
 
     private void cargarUsuarioParaEditar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        // Obtener el ID del parámetro de la URL
-        int id = Integer.parseInt(request.getParameter("id"));
-        
-        // Usar el DAO para obtener el objeto Usuario completo
-        Usuario usuarioExistente = usuarioDAO.obtenerPorId(id); 
-        
-        // Poner el usuario en el request para que el formulario lo pueda leer
+
+        String idParam = request.getParameter("id");
+        if (idParam == null || !idParam.matches("\\d+")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID de usuario inválido");
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
+        Usuario usuarioExistente = usuarioDAO.obtenerPorId(id);
+
+        if (usuarioExistente == null) {
+            response.sendError(HttpServletResponse.SC_NOT_FOUND, "Usuario no encontrado");
+            return;
+        }
+
         request.setAttribute("usuarioAEditar", usuarioExistente);
-        
-        // Reenviar al mismo formulario que usas para registrar, pero ahora estará lleno
         RequestDispatcher dispatcher = request.getRequestDispatcher("registroUsuarios.jsp");
         dispatcher.forward(request, response);
     }
 
-    private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response) 
+    private void eliminarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-    	
-        int id = Integer.parseInt(request.getParameter("id"));
-        
-        usuarioDAO.eliminarUsuario(id); 
-        
-        response.sendRedirect(request.getContextPath() + "/usuarios?action=listar");
+
+        String idParam = request.getParameter("id");
+        if (idParam == null || !idParam.matches("\\d+")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
+        usuarioDAO.eliminarUsuario(id);
+        response.sendRedirect(request.getContextPath() + "/usuarios?action=listar&eliminacion=exitosa");
     }
-    
-    private void mostrarFormularioVacio(HttpServletRequest request, HttpServletResponse response) 
+
+    private void mostrarFormularioVacio(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	
+
         RequestDispatcher dispatcher = request.getRequestDispatcher("/registroUsuarios.jsp");
-        
         dispatcher.forward(request, response);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) 
+    @Override
+    protected void doPost(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
-    	
+
         String action = request.getParameter("action");
+        if (action == null) {
+            response.sendRedirect(request.getContextPath() + "/usuarios");
+            return;
+        }
+
         try {
-            
             switch (action) {
                 case "registrar":
                     registrarUsuario(request, response);
                     break;
-                    
+
                 case "actualizar":
                     actualizarUsuario(request, response);
                     break;
-                    
+
                 default:
-                   
-                    response.sendRedirect(request.getContextPath() + "/usuarios");
+                    response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Acción POST no válida: " + action);
                     break;
             }
         } catch (SQLException e) {
-           
-            throw new ServletException("Error en la base de datos", e);
+            throw new ServletException("Error en la base de datos durante la acción: " + action, e);
         }
     }
 
-    private void registrarUsuario(HttpServletRequest request, HttpServletResponse response) 
+    private void registrarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-       
+
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        
-      
-        boolean esAdmin = "admin".equals(request.getParameter("rol"));
+        boolean esAdmin = "admin".equalsIgnoreCase(request.getParameter("rol"));
 
-       
+        if (nombre == null || email == null || password == null ||
+            nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan campos obligatorios");
+            return;
+        }
+
         Usuario nuevoUsuario = new Usuario(nombre, email, password, esAdmin);
-        
-     
-        usuarioDAO.agregarUsuario(nuevoUsuario); 
-        
-        response.sendRedirect(request.getContextPath() + "/usuarios?action=listar&registro=exitoso");
+        usuarioDAO.agregarUsuario(nuevoUsuario);
+        if (esAdmin) {
+            response.sendRedirect(request.getContextPath() + "/usuarios?action=listar&registro=exitoso");
+        } else {
+            response.sendRedirect(request.getContextPath() + "/login.jsp?registro=exitoso");
+        }
     }
 
-    private void actualizarUsuario(HttpServletRequest request, HttpServletResponse response) 
+    private void actualizarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {
-       
-        int id = Integer.parseInt(request.getParameter("id"));
+
+        String idParam = request.getParameter("id");
+        if (idParam == null || !idParam.matches("\\d+")) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "ID inválido");
+            return;
+        }
+
+        int id = Integer.parseInt(idParam);
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        boolean esAdmin = "admin".equals(request.getParameter("rol"));
+        boolean esAdmin = "admin".equalsIgnoreCase(request.getParameter("rol"));
 
-       
+        if (nombre == null || email == null || password == null ||
+            nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
+            response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan campos obligatorios");
+            return;
+        }
+
         Usuario usuario = new Usuario(id, nombre, email, password, esAdmin);
-
-        
-        usuarioDAO.modificarUsuario(usuario); 
-
-       
+        usuarioDAO.modificarUsuario(usuario);
         response.sendRedirect(request.getContextPath() + "/usuarios?action=listar&actualizacion=exitosa");
-    
     }
 }

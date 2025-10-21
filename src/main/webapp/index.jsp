@@ -17,7 +17,7 @@
         </main>
 
         <footer class="cta-container">
-            <!-- Estos enlaces usan las clases de botón para un llamado a la acción claro -->
+            
             <a class="btn-primary" href="${pageContext.request.contextPath}/login">Iniciar Sesión</a>
             <a class="btn-secondary" href="${pageContext.request.contextPath}/usuarios?action=mostrarFormulario">Registrarse</a>
         </footer>
