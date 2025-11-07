@@ -6,6 +6,7 @@ import javax.servlet.annotation.*;
 import java.time.format.DateTimeParseException;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import dao.InstalacionDAO;
 import dao.UsuarioDAO;
@@ -57,18 +58,26 @@ public class ReservaServlet extends HttpServlet  {
         }
     }
     
-    private void listarReservas(HttpServletRequest request, HttpServletResponse response) 
+    private void listarReservas(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
-    	
-        List<Reserva> listaReservas = reservaDAO.listarReserva();
-        
-        request.setAttribute("reservas", listaReservas);
-        
-        RequestDispatcher dispatcher = request.getRequestDispatcher("listadoReservas.jsp");
-        
-        dispatcher.forward(request, response);
 
+        HttpSession session = request.getSession();
+        Usuario usuario = (Usuario) session.getAttribute("usuario");
+
+        List<Reserva> listaReservas;
+
+        if (usuario == null) {
+            listaReservas = new ArrayList<>();
+        } else {
+            listaReservas = reservaDAO.listarReservasPorUsuario(usuario.getId());
+        }
+
+       
+        request.setAttribute("reservas", listaReservas);
+        RequestDispatcher dispatcher = request.getRequestDispatcher("user_dashboard.jsp");
+        dispatcher.forward(request, response);
     }
+
 
     private void cargarReservaParaEditar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
@@ -93,13 +102,25 @@ public class ReservaServlet extends HttpServlet  {
 
     private void eliminarReserva(HttpServletRequest request, HttpServletResponse response) 
             throws SQLException, IOException {
-    	
+
         int id = Integer.parseInt(request.getParameter("id"));
-        
-        reservaDAO.eliminarReserva(id); 
-        
+
+        Reserva reserva = reservaDAO.obtenerPorId(id);
+
+        if (reserva != null) {
+            LocalDate hoy = LocalDate.now();
+
+            if (reserva.getFecha().isAfter(hoy) && reserva.getEstado() != EstadoReserva.CANCELADA) {
+                reservaDAO.actualizarEstadoReserva(id, EstadoReserva.CANCELADA);
+
+            } else {
+                reservaDAO.eliminarReserva(id);
+            }
+        }
+
         response.sendRedirect(request.getContextPath() + "/reservas?action=listar");
     }
+
     
     private void mostrarFormularioVacio(HttpServletRequest request, HttpServletResponse response) 
             throws ServletException, IOException {
@@ -220,10 +241,6 @@ public class ReservaServlet extends HttpServlet  {
         }
     }
     
-    
-
-     
-
     private void actualizarReserva(HttpServletRequest request, HttpServletResponse response) 
             throws SQLException, IOException {
     	

@@ -11,7 +11,7 @@
 <div class="form-container">
     <h2>${empty reservaAEditar ? 'Registro de Nueva Reserva' : 'Editar Reserva'}</h2>
 
-    <!-- Mensajes de error o éxito -->
+
     <c:if test="${not empty param.error}">
         <div class="alert alert-error">
             <c:choose>
@@ -32,7 +32,6 @@
     </c:if>
 
     <form action="${pageContext.request.contextPath}/reservas" method="post">
-        <!-- Acción: registrar o actualizar -->
         <c:choose>
             <c:when test="${empty reservaAEditar}">
                 <input type="hidden" name="action" value="registrar">

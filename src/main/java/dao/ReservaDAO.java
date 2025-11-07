@@ -40,7 +40,6 @@ public class ReservaDAO {
 		        }
 		    }
 		 
-
 		    // Buscar por ID
 		    public Reserva obtenerPorId(int id) {
 		        String sql = "SELECT * FROM reservas WHERE id = ?";
@@ -81,7 +80,6 @@ public class ReservaDAO {
 		        return r;
 		    }
 
-		    
 		    // List
 		    public List<Reserva> listarReserva() {
 		        List<Reserva> lista = new ArrayList<>();
@@ -132,8 +130,7 @@ public class ReservaDAO {
 
 		        return lista;
 		    }
-
-		   
+		    
 		    // Update
 		    public void modificarReserva(Reserva r) {
 		        String sql = "UPDATE reservas SET fecha = ?, horaInicio = ?, horaFin = ? WHERE id = ?";
@@ -195,6 +192,65 @@ public class ReservaDAO {
 		        return false;
 		    }
 		    
+		    public List<Reserva> listarReservasPorUsuario(int idUsuario) {
+		        List<Reserva> lista = new ArrayList<>();
+		        String sql =  "SELECT " +
+		                "r.id AS res_id, r.fecha, r.horaInicio, r.horaFin, r.monto, r.estado, " +
+		                "u.id AS usu_id, u.nombre AS usu_nombre, " +
+		                "i.id AS ins_id, i.nombre AS ins_nombre " +
+		                "FROM reservas r " +
+		                "JOIN usuarios u ON r.usuario = u.id " +
+		                "JOIN instalaciones i ON r.instalacion = i.id " +
+		                "WHERE u.id = ?"; // <-- filtramos por usuario
+
+		        try (Connection conn = ConexionUtil.getConexion();
+		             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+		            stmt.setInt(1, idUsuario);
+
+		            try (ResultSet rs = stmt.executeQuery()) {
+		                while (rs.next()) {
+		                    Usuario usuario = new Usuario();
+		                    usuario.setId(rs.getInt("usu_id"));
+		                    usuario.setNombre(rs.getString("usu_nombre"));
+
+		                    Instalacion instalacion = new Instalacion();
+		                    instalacion.setId(rs.getInt("ins_id"));
+		                    instalacion.setNombre(rs.getString("ins_nombre"));
+
+		                    EstadoReserva estado = EstadoReserva.valueOf(rs.getString("estado").toUpperCase());
+
+		                    Reserva r = new Reserva(
+		                            rs.getInt("res_id"),
+		                            usuario,
+		                            instalacion,
+		                            rs.getDate("fecha").toLocalDate(),
+		                            rs.getTime("horaInicio").toLocalTime(),
+		                            rs.getTime("horaFin").toLocalTime(),
+		                            estado,
+		                            rs.getDouble("monto")
+		                    );
+
+		                    lista.add(r);
+		                }
+		            }
+
+		        } catch (SQLException e) {
+		            e.printStackTrace();
+		        }
+
+		        return lista;
+		    }
+
+		    public void actualizarEstadoReserva(int id, EstadoReserva nuevoEstado) throws SQLException {
+		        String sql = "UPDATE reservas SET estado = ? WHERE id = ?";
+		        try (Connection conn = ConexionUtil.getConexion();
+		             PreparedStatement stmt = conn.prepareStatement(sql)) {
+		            stmt.setString(1, nuevoEstado.name());
+		            stmt.setInt(2, id);
+		            stmt.executeUpdate();
+		        }
+		    }
 	}
 
 
