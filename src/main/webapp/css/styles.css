@@ -50,11 +50,11 @@ body {
     display: flex;
     justify-content: center;
     gap: 20px; 
-    flex-wrap: wrap; /* Para que se ajusten en móviles */
+    flex-wrap: wrap; /
 }
 
 
-/* Contenedor formularios de Login y Registro) */
+
 
 .form-container { 
     margin: 20px;

@@ -65,20 +65,20 @@ public class InstalacionServlet extends HttpServlet {
 
     private void cargarInstalacionParaEditar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        // Obtener el ID del parámetro de la URL
+       
         int id = Integer.parseInt(request.getParameter("id"));
         
-        // Usar el DAO para obtener el objeto Instalacion completo
+        
         Instalacion instalacionExistente = instalacionDAO.obtenerPorId(id); 
         
-        // Poner el usuario en el request para que el formulario lo pueda leer
+        
         request.setAttribute("instalacionAEditar", instalacionExistente);
         
-        //Para que aparezca el select 
+         
         List<TipoInstalacion> listaTipos = tipoInstalacionDAO.listarTipo();
         request.setAttribute("tiposInstalaciones", listaTipos);
         
-        // Reenviar al mismo formulario que usas para registrar, pero ahora estará lleno
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("registroInstalacion.jsp");
         dispatcher.forward(request, response);
     }
@@ -139,24 +139,24 @@ public class InstalacionServlet extends HttpServlet {
         TipoInstalacion tipo = new TipoInstalacion();
         tipo.setId(tipoId);
         
-        String horaAperturaStr = request.getParameter("horaApertura"); // String
+        String horaAperturaStr = request.getParameter("horaApertura"); 
         LocalTime horaApertura = null;
 
         if (horaAperturaStr != null && !horaAperturaStr.isEmpty()) {
-        	horaApertura = LocalTime.parse(horaAperturaStr); // convierte "14:30" a LocalTime
+        	horaApertura = LocalTime.parse(horaAperturaStr); 
         }
-        String horaCierreStr = request.getParameter("horaCierre"); // String
+        String horaCierreStr = request.getParameter("horaCierre"); 
         LocalTime horaCierre = null;
 
         if (horaCierreStr != null && !horaCierreStr.isEmpty()) {
-            horaCierre = LocalTime.parse(horaCierreStr); // convierte "14:30" a LocalTime
+            horaCierre = LocalTime.parse(horaCierreStr); 
         }
         String direccion = request.getParameter("direccion");
-        String precioStr = request.getParameter("precioxhora"); // lo traés como String
+        String precioStr = request.getParameter("precioxhora");
         Double precioxhora = null;
 
         if (precioStr != null && !precioStr.isEmpty()) {
-            precioxhora = Double.parseDouble(precioStr); // convertís a Double
+            precioxhora = Double.parseDouble(precioStr); 
         } 
         
  
@@ -178,24 +178,24 @@ public class InstalacionServlet extends HttpServlet {
         int tipoId = Integer.parseInt(request.getParameter("tipoId"));
         TipoInstalacion tipo = new TipoInstalacion(tipoId);
         
-        String horaAperturaStr = request.getParameter("horaApertura"); // String
+        String horaAperturaStr = request.getParameter("horaApertura"); 
         LocalTime horaApertura = null;
 
         if (horaAperturaStr != null && !horaAperturaStr.isEmpty()) {
-        	horaApertura = LocalTime.parse(horaAperturaStr); // convierte "14:30" a LocalTime
+        	horaApertura = LocalTime.parse(horaAperturaStr);
         }
-        String horaCierreStr = request.getParameter("horaCierre"); // String
+        String horaCierreStr = request.getParameter("horaCierre"); 
         LocalTime horaCierre = null;
 
         if (horaCierreStr != null && !horaCierreStr.isEmpty()) {
-            horaCierre = LocalTime.parse(horaCierreStr); // convierte "14:30" a LocalTime
+            horaCierre = LocalTime.parse(horaCierreStr);
         }
         String direccion = request.getParameter("direccion");
-        String precioStr = request.getParameter("precioxhora"); // lo traés como String
+        String precioStr = request.getParameter("precioxhora");
         Double precioxhora = null;
 
         if (precioStr != null && !precioStr.isEmpty()) {
-            precioxhora = Double.parseDouble(precioStr); // convertís a Double
+            precioxhora = Double.parseDouble(precioStr);
         } 
 
 

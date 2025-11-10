@@ -11,20 +11,20 @@
         
         <form action="${pageContext.request.contextPath}/tipoInstalaciones" method="post">
         
-            <!-- LÓGICA CLAVE: La acción y el ID cambian según si estamos editando o no -->
+            
             <c:if test="${not empty tipoInstalacionAEditar}">
-                <!-- MODO EDICIÓN: La acción es 'actualizar' e incluimos el ID del usuario -->
+                
                 <input type="hidden" name="action" value="actualizar">
                 <input type="hidden" name="id" value="${tipoInstalacionAEditar.id}">
             </c:if>
             <c:if test="${empty tipoInstalacionAEditar}">
-                <!-- MODO REGISTRO: La acción es 'registrar' -->
+                
                 <input type="hidden" name="action" value="registrar">
             </c:if>
             
             <div class="form-group">
                 <label for="nombre">Nombre:</label>
-                <!-- Usamos el atributo 'value' para pre-rellenar el campo si el usuario existe -->
+               
                 <input type="text" id="nombre" name="nombre" value="${tipoInstalacionAEditar.nombre}" required>
             </div>
             

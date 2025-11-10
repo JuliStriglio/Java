@@ -125,7 +125,7 @@ public class UsuarioDAO {
 	    
 	    public Usuario verificarCredenciales(String email, String password) {
 	        Usuario usuario = null;
-	        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ?"; // Asume que tu tabla se llama 'usuarios'
+	        String sql = "SELECT * FROM usuarios WHERE email = ? AND password = ?";
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement ps = conn.prepareStatement(sql)) {
@@ -135,7 +135,7 @@ public class UsuarioDAO {
 
 	            try (ResultSet rs = ps.executeQuery()) {
 	                if (rs.next()) {
-	                    // Si se encuentra un usuario, se crea el objeto Usuario con los datos de la BD
+	                    
 	                    usuario = new Usuario(
 	                        rs.getInt("id"),
 	                        rs.getString("nombre"),

@@ -110,7 +110,7 @@
 }
 
 .data-table thead tr {
-    background-color: #f8f9fa; /* Un fondo sutil para la cabecera */
+    background-color: #f8f9fa; 
 }
 
 .data-table th {
@@ -119,23 +119,22 @@
 }
 
 .data-table tbody tr:nth-of-type(even) {
-    background-color: #fdfdfd; /* Filas con colores alternos para legibilidad */
+    background-color: #fdfdfd; /
 }
 
 .data-table tbody tr:hover {
-    background-color: #f1f1f1; /* Resaltado al pasar el mouse */
+    background-color: #f1f1f1; 
 }
 
 .actions-column {
-    width: 100px; /* Ancho fijo para la columna de acciones */
+    width: 100px; 
     text-align: center;
 }
 
 .actions-cell {
     text-align: center;
-    white-space: nowrap; /* Evita que los botones se partan en dos líneas */
+    white-space: nowrap; 
 }
-
 /* --- BOTONES DE ICONOS PARA ACCIONES --- */
 .btn-icon {
     display: inline-block;

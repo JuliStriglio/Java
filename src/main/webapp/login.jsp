@@ -32,7 +32,7 @@
 				    </div>
 				<% } %>
 	        
-	        <!-- Mostrar mensaje de error si existe -->
+	        
 	        <%
 	            String mensajeError = (String) request.getAttribute("mensajeError");
 	            if (mensajeError != null) {

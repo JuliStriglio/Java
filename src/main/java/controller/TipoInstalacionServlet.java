@@ -27,7 +27,7 @@ public class TipoInstalacionServlet extends HttpServlet {
 
         try {
             switch (action) {
-            	case "mostrarFormulario": // <-- AÑADIR ESTE CASO
+            	case "mostrarFormulario": 
 	                mostrarFormularioVacio(request, response);
 	                break;
                 case "cargar":
@@ -61,16 +61,16 @@ public class TipoInstalacionServlet extends HttpServlet {
 
     private void cargarInstalacionParaEditar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
-        // Obtener el ID del parámetro de la URL
+        
         int id = Integer.parseInt(request.getParameter("id"));
         
-        // Usar el DAO para obtener el objeto Instalacion completo
+        
         TipoInstalacion tipoInstalacionExistente = TipoInstalacionDAO.obtenerPorId(id); 
         
-        // Poner el usuario en el request para que el formulario lo pueda leer
+        
         request.setAttribute("tipoInstalacionAEditar", tipoInstalacionExistente);
         
-        // Reenviar al mismo formulario que usas para registrar, pero ahora estará lleno
+      
         RequestDispatcher dispatcher = request.getRequestDispatcher("registroTipoInstalacion.jsp");
         dispatcher.forward(request, response);
     }
