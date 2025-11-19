@@ -10,7 +10,12 @@
          <h2>${not empty usuarioAEditar ? 'Editar' : 'Registrar Nuevo'} Usuario</h2>
         <p class="form-subtitle">Crea tu cuenta para acceder al sistema de reservas.</p>
         
-        <form action="${pageContext.request.contextPath}/usuarios" method="post">           
+        <form action="${pageContext.request.contextPath}/usuarios" method="post">      
+           
+        	<c:if test="${esAdmin}">
+			    <input type="hidden" name="creadoPorAdmin" value="true">
+			</c:if>
+          
             <c:if test="${not empty usuarioAEditar}">
                 <input type="hidden" name="action" value="actualizar">
                 <input type="hidden" name="id" value="${usuarioAEditar.id}">
@@ -37,33 +42,43 @@
             </div>
             
             <div class="form-group">
-                <label for="rol">Rol:</label>
-                <select id="rol" name="rol">
-                    <c:choose>
-                        <c:when test="${not empty usuarioAEditar and esAdmin}">                            
-                            <option value="usuario" ${usuarioAEditar.rol == 'usuario' ? 'selected' : ''}>Usuario Normal</option>
-                            <option value="admin" ${usuarioAEditar.rol == 'admin' ? 'selected' : ''}>Administrador</option>
-                        </c:when>
-                        
-                        <c:when test="${not empty usuarioAEditar and not esAdmin}">                            
-                            <option value="usuario" selected disabled>Usuario Normal</option>
-                            <input type="hidden" name="rol" value="usuario"> 
-                        </c:when>
-                        
-                        <c:otherwise>                          
-                            <option value="usuario" selected>Usuario Normal</option>
-                            <input type="hidden" name="rol" value="usuario">
-                        </c:otherwise>
-                    </c:choose>
-                </select>
+			    <label for="rol">Rol:</label>
+			
+			    <c:choose>
+			
+			        
+			        <c:when test="${esAdmin}">
+			            <select id="rol" name="rol">
+			                <option value="usuario" ${not empty usuarioAEditar && usuarioAEditar.rol ? '' : 'selected'}>
+			                    Usuario Normal
+			                </option>
+			                <option value="admin" ${not empty usuarioAEditar && usuarioAEditar.rol ? 'selected' : ''}>
+			                    Administrador
+			                </option>
+			            </select>
+			        </c:when>
+			
+			        
+			        <c:when test="${not empty usuarioAEditar and not esAdmin}">
+			            <select id="rol" name="rol" disabled>
+			                <option value="usuario" selected>Usuario Normal</option>
+			            </select>
+			            <input type="hidden" name="rol" value="usuario">
+			            <p>Tu rol actual es: <strong>Usuario Normal</strong></p>
+			        </c:when>
+			
+			        
+			        <c:otherwise>
+			            <select id="rol" name="rol" disabled>
+			                <option value="usuario" selected>Usuario Normal</option>
+			            </select>
+			            <input type="hidden" name="rol" value="usuario">
+			            <p>Tu rol será: <strong>Usuario Normal</strong></p>
+			        </c:otherwise>
+			
+			    </c:choose>
+			</div>
 
-                <c:if test="${not empty usuarioAEditar and not esAdmin}">                   
-                    <p>Su rol actual es: <strong>${usuarioAEditar.rol == 'usuario' ? 'Usuario Normal' : 'Administrador'}</strong></p>
-                </c:if>
-                <c:if test="${empty usuarioAEditar}">                   
-                    <p>Su rol será: <strong>Usuario Normal</strong></p>
-                </c:if>
-            </div>
             
             <%@ page import="model.Usuario" %>
 				<%

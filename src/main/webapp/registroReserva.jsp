@@ -1,5 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
+<%@ page import="model.EstadoReserva" %>
+
 
 <html>
 <head>
@@ -44,25 +47,24 @@
 
         <!-- USUARIO -->
         <div class="form-group">
-            <c:choose>
-                <c:when test="${usuarioLogueado.rol}">
-                    <label for="usuarioId">Usuario:</label>
-                    <select name="usuarioId" id="usuarioId">
-                        <c:forEach var="u" items="${usuarios}">
-                            <option value="${u.id}"
-                                <c:if test="${reservaAEditar != null && reservaAEditar.usuario.id == u.id}">selected</c:if>>
-                                ${u.nombre}
-                            </option>
-                        </c:forEach>
-                    </select>
-                </c:when>
-                <c:otherwise>
-                    <input type="hidden" name="usuarioId" value="${usuarioLogueado.id}">
-                    <p><strong>Usuario:</strong> ${usuarioLogueado.nombre}</p>
-                </c:otherwise>
-            </c:choose>
-        </div>
-
+			    <c:choose>
+			       <c:when test="${usuarioLogueado.rol == true}">
+			            <label for="use">Usuario:</label>
+			            <select name="usuarioId" id="use">
+			                <c:forEach var="use" items="${usuarios}">
+			                    <option value="${use.id}"
+			                        <c:if test="${reservaAEditar != null && reservaAEditar.usuario.id == use.id}">selected</c:if>>
+			                        ${use.nombre}
+			                    </option>
+			                </c:forEach>
+			            </select>
+			        </c:when>
+			        <c:otherwise>
+			            <input type="hidden" name="usuarioId" value="${usuarioLogueado.id}">
+			            <p><strong>Usuario:</strong> ${usuarioLogueado.nombre}</p>
+			        </c:otherwise>
+			    </c:choose>
+			</div>
         <!-- INSTALACIÓN -->
         <div class="form-group">
             <label for="ins">Instalación:</label>
@@ -98,18 +100,22 @@
         </div>
 
         <!-- ESTADO (solo admin) -->
-        <c:if test="${usuarioLogueado.rol}">
-            <div class="form-group">
-                <label for="estado">Estado:</label>
-                <select name="estado" id="estado">
-                    <option value="PENDIENTE" ${reservaAEditar.estado == 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
-                    <option value="ACTIVA" ${reservaAEditar.estado == 'ACTIVA' ? 'selected' : ''}>Activa</option>
-                    <option value="CANCELADA" ${reservaAEditar.estado == 'CANCELADA' ? 'selected' : ''}>Cancelada</option>
-                </select>
-            </div>
-        </c:if>
+        <c:if test="${usuarioLogueado.rol == true}">
 
-        <!-- MONTO (readonly) -->
+		    <div class="form-group">
+		        <label for="estado">Estado:</label>
+		        <select name="estado" class="form-select">
+				    <option value="PENDIENTE" ${reservaAEditar.estado == 'PENDIENTE' ? 'selected' : ''}>Pendiente</option>
+				    <option value="CONFIRMADA" ${reservaAEditar.estado == 'CONFIRMADA' ? 'selected' : ''}>Confirmada</option>
+				    <option value="CANCELADA" ${reservaAEditar.estado == 'CANCELADA' ? 'selected' : ''}>Cancelada</option>
+				    <option value="FINALIZADA" ${reservaAEditar.estado == 'FINALIZADA' ? 'selected' : ''}>Finalizada</option>
+				</select>
+
+		    </div>
+		</c:if>
+
+
+        <!-- MONTO  -->
         <div class="form-group">
             <label for="monto">Monto:</label>
             <input type="number" id="monto" name="monto"
@@ -119,18 +125,21 @@
 
         <!-- BOTONES -->
         <div class="form-group button-group">
-            <button type="submit" class="btn-primary">
-                ${empty reservaAEditar ? 'Registrar' : 'Actualizar'}
-            </button>
-            <c:choose>
-                <c:when test="${usuarioLogueado.rol}">
-                    <a href="${pageContext.request.contextPath}/reservas?action=listar" class="btn-secondary">Cancelar</a>
-                </c:when>
-                <c:otherwise>
-                    <a href="${pageContext.request.contextPath}/user_dashboard.jsp" class="btn-secondary">Cancelar</a>
-                </c:otherwise>
-            </c:choose>
-        </div>
+		    <button type="submit" class="btn-primary">
+		        ${empty reservaAEditar ? 'Registrar' : 'Actualizar'}
+		    </button>
+		
+		    <c:choose>
+			    <c:when test="${usuarioLogueado.rol}">
+			        <a href="${pageContext.request.contextPath}/reservas" class="btn">Cancelar</a>
+			    </c:when>
+			    <c:otherwise>
+			        <a href="${pageContext.request.contextPath}/user_dashboard.jsp" class="btn">Cancelar</a>
+			    </c:otherwise>
+			</c:choose>
+
+		</div>
+
     </form>
 </div>
 

@@ -41,47 +41,57 @@ public class ReservaDAO {
 		    }
 		 
 		    // Buscar por ID
-		    public Reserva obtenerPorId(int id) {
-		        String sql = "SELECT * FROM reservas WHERE id = ?";
-		        Reserva r = null;
+		 public Reserva obtenerPorId(int id) {
+			    String sql = "SELECT r.id AS res_id, r.fecha, r.horaInicio, r.horaFin, r.monto, r.estado, " +
+			                 "u.id AS usu_id, u.nombre AS usu_nombre, " +
+			                 "i.id AS ins_id, i.nombre AS ins_nombre " +
+			                 "FROM reservas r " +
+			                 "JOIN usuarios u ON r.usuario = u.id " +
+			                 "JOIN instalaciones i ON r.instalacion = i.id " +
+			                 "WHERE r.id = ?";
 
-		        try (Connection conn = ConexionUtil.getConexion();
-		             PreparedStatement stmt = conn.prepareStatement(sql)) {
+			    Reserva r = null;
 
-		            stmt.setInt(1, id);
-		            ResultSet rs = stmt.executeQuery();
+			    try (Connection conn = ConexionUtil.getConexion();
+			         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-		            if (rs.next()) {
-		            	Usuario usuario = new Usuario();
-		            	usuario.setId(rs.getInt("id"));
-		            	
-		            	Instalacion instalacion = new Instalacion();
-		            	instalacion.setId(rs.getInt("id"));
-		            	
-		            	 EstadoReserva estado = EstadoReserva.valueOf(rs.getString("estado").toUpperCase());
-		            	
-		                r = new Reserva(
-		                        rs.getInt("id"),
-		                        usuario,
-		                        instalacion,
-		                        rs.getDate("fecha").toLocalDate(),
-		                        rs.getTime("horaInicio").toLocalTime(),
-		                        rs.getTime("horaFin").toLocalTime(),
-		                        estado,
-		                        rs.getDouble("monto")
-		                        
-		                );
-		            }
+			        stmt.setInt(1, id);
+			        ResultSet rs = stmt.executeQuery();
 
-		        } catch (SQLException e) {
-		            e.printStackTrace();
-		        }
+			        if (rs.next()) {
 
-		        return r;
-		    }
+			            Usuario usuario = new Usuario();
+			            usuario.setId(rs.getInt("usu_id"));
+			            usuario.setNombre(rs.getString("usu_nombre"));
+
+			            Instalacion instalacion = new Instalacion();
+			            instalacion.setId(rs.getInt("ins_id"));
+			            instalacion.setNombre(rs.getString("ins_nombre"));
+
+			            EstadoReserva estado = EstadoReserva.valueOf(rs.getString("estado").toUpperCase());
+
+			            r = new Reserva(
+			                rs.getInt("res_id"),
+			                usuario,
+			                instalacion,
+			                rs.getDate("fecha").toLocalDate(),
+			                rs.getTime("horaInicio").toLocalTime(),
+			                rs.getTime("horaFin").toLocalTime(),
+			                estado,
+			                rs.getDouble("monto")
+			            );
+			        }
+
+			    } catch (SQLException e) {
+			        e.printStackTrace();
+			    }
+
+			    return r;
+			}
+
 
 		    // List
-		    public List<Reserva> listarReserva() {
+		    public List<Reserva> listarReservas() {
 		        List<Reserva> lista = new ArrayList<>();
 		        String sql =  "SELECT " +
 		                "r.id AS res_id, r.fecha, r.horaInicio, r.horaFin, r.monto, r.estado, " +
@@ -133,15 +143,19 @@ public class ReservaDAO {
 		    
 		    // Update
 		    public void modificarReserva(Reserva r) {
-		        String sql = "UPDATE reservas SET fecha = ?, horaInicio = ?, horaFin = ? WHERE id = ?";
-
+		    	String sql = "UPDATE reservas SET usuario=?, instalacion=?, fecha=?, horaInicio=?, horaFin=?, estado=?, monto=? WHERE id=?";
+		        
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-		            stmt.setDate(1, Date.valueOf(r.getFecha()));;
-		            stmt.setTime(2, Time.valueOf(r.getHoraInicio()));
-		            stmt.setTime(3, Time.valueOf(r.getHoraFin()));;
-		            stmt.setInt(4, r.getId());
+		        	stmt.setInt(1, r.getUsuario().getId());
+		        	stmt.setInt(2, r.getInstalacion().getId());
+		        	stmt.setDate(3, Date.valueOf(r.getFecha()));
+		            stmt.setTime(4, Time.valueOf(r.getHoraInicio()));
+		            stmt.setTime(5, Time.valueOf(r.getHoraFin()));
+		            stmt.setString(6, r.getEstado().name());
+		            stmt.setDouble(7, r.getMonto());
+		            stmt.setInt(8, r.getId());
 
 		            stmt.executeUpdate();
 
@@ -149,6 +163,7 @@ public class ReservaDAO {
 		            e.printStackTrace();
 		        }
 		    }
+
 
 		    // Delete
 		    public void eliminarReserva(int id) {
@@ -241,16 +256,10 @@ public class ReservaDAO {
 
 		        return lista;
 		    }
+		    
+		    public void actualizarEstadoReserva(int id, EstadoReserva nuevoEstado) throws SQLException { String sql = "UPDATE reservas SET estado = ? WHERE id = ?"; try (Connection conn = ConexionUtil.getConexion(); PreparedStatement stmt = conn.prepareStatement(sql)) { stmt.setString(1, nuevoEstado.name()); stmt.setInt(2, id); stmt.executeUpdate(); } }
 
-		    public void actualizarEstadoReserva(int id, EstadoReserva nuevoEstado) throws SQLException {
-		        String sql = "UPDATE reservas SET estado = ? WHERE id = ?";
-		        try (Connection conn = ConexionUtil.getConexion();
-		             PreparedStatement stmt = conn.prepareStatement(sql)) {
-		            stmt.setString(1, nuevoEstado.name());
-		            stmt.setInt(2, id);
-		            stmt.executeUpdate();
-		        }
-		    }
+		    
 	}
 
 

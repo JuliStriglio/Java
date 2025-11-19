@@ -29,6 +29,7 @@ public class UsuarioServlet extends HttpServlet {
 
         request.setAttribute("esAdmin", esAdmin);
 
+        
         String action = request.getParameter("action");
         if (action == null) {
             action = "listar";
@@ -78,9 +79,12 @@ public class UsuarioServlet extends HttpServlet {
 
     private void listarUsuarios(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException, ServletException {
+    	
 
         List<Usuario> listaUsuarios = usuarioDAO.listarUsuarios();
         request.setAttribute("usuarios", listaUsuarios);
+        
+        
         RequestDispatcher dispatcher = request.getRequestDispatcher("listadoUsuarios.jsp");
         dispatcher.forward(request, response);
     }
@@ -163,22 +167,32 @@ public class UsuarioServlet extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String email = request.getParameter("email");
         String password = request.getParameter("password");
-        boolean esAdmin = "admin".equalsIgnoreCase(request.getParameter("rol"));
+        boolean esAdminDelUsuarioNuevo = "admin".equalsIgnoreCase(request.getParameter("rol"));
 
+        boolean creadoPorAdmin = "true".equals(request.getParameter("creadoPorAdmin"));
+
+        // Validaciones básicas
         if (nombre == null || email == null || password == null ||
             nombre.isEmpty() || email.isEmpty() || password.isEmpty()) {
+
             response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Faltan campos obligatorios");
             return;
         }
 
-        Usuario nuevoUsuario = new Usuario(nombre, email, password, esAdmin);
+        // Crear el usuario nuevo
+        Usuario nuevoUsuario = new Usuario(nombre, email, password, esAdminDelUsuarioNuevo);
         usuarioDAO.agregarUsuario(nuevoUsuario);
-        if (esAdmin) {
+
+        // Redirecciones según quién creó el usuario
+        if (creadoPorAdmin) {
+            // El administrador creó este usuario, se queda en su panel
             response.sendRedirect(request.getContextPath() + "/usuarios?action=listar&registro=exitoso");
         } else {
+            // Registro normal desde la pantalla pública
             response.sendRedirect(request.getContextPath() + "/login.jsp?registro=exitoso");
         }
     }
+
 
     private void actualizarUsuario(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, IOException {

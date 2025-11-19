@@ -18,7 +18,7 @@
 
         <footer class="cta-container">
             
-            <a class="btn-primary" href="${pageContext.request.contextPath}/login">Iniciar Sesión</a>
+            <a class="btn-primary" href="${pageContext.request.contextPath}/login.jsp">Iniciar Sesión</a>
             <a class="btn-secondary" href="${pageContext.request.contextPath}/usuarios?action=mostrarFormulario">Registrarse</a>
         </footer>
     </div>
