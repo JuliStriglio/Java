@@ -18,7 +18,7 @@ public class InstalacionDAO {
 
 	            stmt.setString(1, i.getNombre());
 	            stmt.setInt(2, i.getTipo().getId());
-	            stmt.setTime(3, java.sql.Time.valueOf(i.getHoraApertura())); // LocalTime → SQL Time
+	            stmt.setTime(3, java.sql.Time.valueOf(i.getHoraApertura()));
 	            stmt.setTime(4, java.sql.Time.valueOf(i.getHoraCierre()));
 	            stmt.setString(5, i.getDireccion());
 	            stmt.setDouble(6, i.getPrecioxhora());
@@ -42,7 +42,6 @@ public class InstalacionDAO {
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 	            stmt.setInt(1, id);
 	            ResultSet rs = stmt.executeQuery();
 
@@ -77,8 +76,6 @@ public class InstalacionDAO {
 	                 "t.id AS tipo_id, t.nombre AS tipo_nombre, t.descripcion AS tipo_desc " +
 	                 "FROM instalaciones i " +
 	                 "JOIN tipoinstalaciones t ON i.tipo = t.id";
-	        
-
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -121,7 +118,7 @@ public class InstalacionDAO {
 	            stmt.setString(1, i.getNombre());
 	            stmt.setInt(2, i.getTipo().getId());
 	            stmt.setTime(3, Time.valueOf(i.getHoraApertura()));
-	            stmt.setTime(4, Time.valueOf(i.getHoraCierre()));// Convierte LocalTime a java.sql.Time
+	            stmt.setTime(4, Time.valueOf(i.getHoraCierre()));
 	            stmt.setString(5, i.getDireccion());
 	            stmt.setDouble(6, i.getPrecioxhora());
 	            stmt.setInt(7, i.getId());
@@ -139,7 +136,6 @@ public class InstalacionDAO {
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 	            stmt.setInt(1, id);
 	            stmt.executeUpdate();
 

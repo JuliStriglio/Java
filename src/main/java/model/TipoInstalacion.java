@@ -54,5 +54,4 @@ public class TipoInstalacion {
 		this.descripcion = descripcion;
 	}
 	
-
 }

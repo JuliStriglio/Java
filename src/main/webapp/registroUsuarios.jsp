@@ -44,9 +44,7 @@
             <div class="form-group">
 			    <label for="rol">Rol:</label>
 			
-			    <c:choose>
-			
-			        
+			    <c:choose>        
 			        <c:when test="${esAdmin}">
 			            <select id="rol" name="rol">
 			                <option value="usuario" ${not empty usuarioAEditar && usuarioAEditar.rol ? '' : 'selected'}>
@@ -58,7 +56,6 @@
 			            </select>
 			        </c:when>
 			
-			        
 			        <c:when test="${not empty usuarioAEditar and not esAdmin}">
 			            <select id="rol" name="rol" disabled>
 			                <option value="usuario" selected>Usuario Normal</option>
@@ -66,7 +63,6 @@
 			            <input type="hidden" name="rol" value="usuario">
 			            <p>Tu rol actual es: <strong>Usuario Normal</strong></p>
 			        </c:when>
-			
 			        
 			        <c:otherwise>
 			            <select id="rol" name="rol" disabled>
@@ -75,7 +71,6 @@
 			            <input type="hidden" name="rol" value="usuario">
 			            <p>Tu rol será: <strong>Usuario Normal</strong></p>
 			        </c:otherwise>
-			
 			    </c:choose>
 			</div>
 

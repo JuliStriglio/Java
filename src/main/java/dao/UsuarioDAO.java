@@ -11,7 +11,6 @@ public class UsuarioDAO {
 
 	 public void agregarUsuario(Usuario u) {
 	        String sql = "INSERT INTO usuarios (nombre, email, password, rol) VALUES (?, ?, ?, ?)";
-
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
@@ -19,7 +18,6 @@ public class UsuarioDAO {
 	            stmt.setString(2, u.getEmail());
 	            stmt.setString(3, u.getPassword());
 	            stmt.setBoolean(4, u.getRol());
-
 	            stmt.executeUpdate();
 
 	            ResultSet rs = stmt.getGeneratedKeys();
@@ -33,14 +31,13 @@ public class UsuarioDAO {
 	        }
 	    }
 
-	    // Buscar por ID
+	    //Buscar por ID
 	    public Usuario obtenerPorId(int id) {
 	        String sql = "SELECT * FROM usuarios WHERE id = ?";
 	        Usuario u = null;
 
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 	            stmt.setInt(1, id);
 	            ResultSet rs = stmt.executeQuery();
 
@@ -65,7 +62,6 @@ public class UsuarioDAO {
 	    public List<Usuario> listarUsuarios() {
 	        List<Usuario> lista = new ArrayList<>();
 	        String sql = "SELECT * FROM usuarios";
-
 	        try (Connection conn = ConexionUtil.getConexion();
 	             PreparedStatement stmt = conn.prepareStatement(sql);
 	             ResultSet rs = stmt.executeQuery()) {

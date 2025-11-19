@@ -6,9 +6,9 @@ public class Usuario {
 	private String nombre;
 	private String email;
 	private String password;
-	private Boolean rol; // false = usuario, true=admin 
+	private Boolean rol; // false = usuario, true = admin 
 	
-	 // Constructor SIN id (para crear nuevos)
+	
     public Usuario(String nombre, String email, String password, Boolean rol) {
         this.nombre = nombre;
         this.email = email;
@@ -20,7 +20,7 @@ public class Usuario {
         
     }
 
-    // Constructor CON id (para leer de la DB)
+ 
     public Usuario(int id, String nombre, String email, String password, Boolean rol) {
         this.id = id;
         this.nombre = nombre;

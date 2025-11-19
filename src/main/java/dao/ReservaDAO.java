@@ -14,19 +14,17 @@ import java.util.List;
 public class ReservaDAO {
 
 		 public void agregarReserva(Reserva r) {
-		        String sql = "INSERT INTO reservas (usuario, instalacion, fecha, horaInicio, horaFin,estado, monto) VALUES (?, ?, ?, ?,?,?,?)";
+		        String sql = "INSERT INTO reservas (usuario, instalacion, fecha, horaInicio, horaFin, estado, monto) VALUES (?, ?, ?, ?,?,?,?)";
 
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-		        	
 		        	stmt.setInt(1, r.getUsuario().getId());
 		        	stmt.setInt(2, r.getInstalacion().getId());
 		        	stmt.setDate(3, java.sql.Date.valueOf(r.getFecha()));
 		        	stmt.setTime(4, java.sql.Time.valueOf(r.getHoraInicio()));
 		        	stmt.setTime(5, java.sql.Time.valueOf(r.getHoraFin()));
-		        	stmt.setString(6, r.getEstado().name()); // 👉 Ya trae "PENDIENTE"
+		        	stmt.setString(6, r.getEstado().name());
 		        	stmt.setDouble(7, r.getMonto());
-		        	
 		            stmt.executeUpdate();
 
 		            ResultSet rs = stmt.getGeneratedKeys();
@@ -54,12 +52,10 @@ public class ReservaDAO {
 
 			    try (Connection conn = ConexionUtil.getConexion();
 			         PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 			        stmt.setInt(1, id);
 			        ResultSet rs = stmt.executeQuery();
 
 			        if (rs.next()) {
-
 			            Usuario usuario = new Usuario();
 			            usuario.setId(rs.getInt("usu_id"));
 			            usuario.setNombre(rs.getString("usu_nombre"));
@@ -100,8 +96,6 @@ public class ReservaDAO {
 		                "FROM reservas r " +
 		                "JOIN usuarios u ON r.usuario = u.id " +
 		                "JOIN instalaciones i ON r.instalacion = i.id";
-		                
-		       
 
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -171,7 +165,6 @@ public class ReservaDAO {
 
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
 		            stmt.setInt(1, id);
 		            stmt.executeUpdate();
 
@@ -216,7 +209,7 @@ public class ReservaDAO {
 		                "FROM reservas r " +
 		                "JOIN usuarios u ON r.usuario = u.id " +
 		                "JOIN instalaciones i ON r.instalacion = i.id " +
-		                "WHERE u.id = ?"; // <-- filtramos por usuario
+		                "WHERE u.id = ?"; 
 
 		        try (Connection conn = ConexionUtil.getConexion();
 		             PreparedStatement stmt = conn.prepareStatement(sql)) {

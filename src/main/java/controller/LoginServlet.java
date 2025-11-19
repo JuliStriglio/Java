@@ -34,7 +34,7 @@ public class LoginServlet extends HttpServlet {
             if (usuario.getRol()) { 
                 response.sendRedirect("admin_dashboard.jsp"); 
             } else { 
-            	response.sendRedirect(request.getContextPath() + "/reservas?action=listar"); 
+            	response.sendRedirect(request.getContextPath() + "/reservas"); 
             }
         } else {
             request.setAttribute("mensajeError", "Email o contraseña incorrectos.");

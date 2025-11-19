@@ -8,8 +8,6 @@ import java.util.List;
 import dao.TipoInstalacionDAO;
 import model.TipoInstalacion;
 
-
-
 @WebServlet("/tipoInstalaciones") 
 public class TipoInstalacionServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -62,14 +60,11 @@ public class TipoInstalacionServlet extends HttpServlet {
     private void cargarInstalacionParaEditar(HttpServletRequest request, HttpServletResponse response)
             throws SQLException, ServletException, IOException {
         
-        int id = Integer.parseInt(request.getParameter("id"));
+        int id = Integer.parseInt(request.getParameter("id"));       
         
+        TipoInstalacion tipoInstalacionExistente = TipoInstalacionDAO.obtenerPorId(id);        
         
-        TipoInstalacion tipoInstalacionExistente = TipoInstalacionDAO.obtenerPorId(id); 
-        
-        
-        request.setAttribute("tipoInstalacionAEditar", tipoInstalacionExistente);
-        
+        request.setAttribute("tipoInstalacionAEditar", tipoInstalacionExistente);        
       
         RequestDispatcher dispatcher = request.getRequestDispatcher("registroTipoInstalacion.jsp");
         dispatcher.forward(request, response);
@@ -102,14 +97,11 @@ public class TipoInstalacionServlet extends HttpServlet {
             switch (action) {
                 case "registrar":
                     registrarTipoInstalacion(request, response);
-                    break;
-                    
+                    break;               
                 case "actualizar":
                     actualizarTipoInstalacion(request, response);
-                    break;
-                    
-                default:
-                   
+                    break;       
+                default:                   
                     response.sendRedirect(request.getContextPath() + "/tipoInstalaciones");
                     break;
             }
@@ -124,12 +116,9 @@ public class TipoInstalacionServlet extends HttpServlet {
        
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
-             
- 
-       
+                 
         TipoInstalacion nuevoTipo = new TipoInstalacion(nombre, descripcion);
-        
-     
+             
         tipoInstalacionDAO.agregarTipoInstalacion(nuevoTipo); 
         
         response.sendRedirect(request.getContextPath() + "/tipoInstalaciones?action=listar&registro=exitoso");
@@ -142,13 +131,10 @@ public class TipoInstalacionServlet extends HttpServlet {
         String nombre = request.getParameter("nombre");
         String descripcion = request.getParameter("descripcion");
         
-        
         TipoInstalacion tipoInstalacion = new TipoInstalacion(id, nombre, descripcion);
-
         
         TipoInstalacionDAO.modificarTipoInstalacion(tipoInstalacion); 
 
-       
         response.sendRedirect(request.getContextPath() + "/tipoInstalaciones?action=listar&actualizacion=exitosa");
     
     }

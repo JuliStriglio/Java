@@ -13,7 +13,7 @@ public class Reserva {
     private EstadoReserva estado;
     private Double monto;
 
-    // Constructor SIN id (para crear nuevas reservas)
+    
     public Reserva(Usuario usuario, Instalacion instalacion, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, Double monto) {
         this.usuario = usuario;
         this.instalacion = instalacion;
@@ -27,6 +27,16 @@ public class Reserva {
     // Constructor CON id (para leer de la BD)
     public Reserva(int id, Usuario usuario, Instalacion instalacion, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, EstadoReserva estado, Double monto) {
         this.id = id;
+        this.usuario = usuario;
+        this.instalacion = instalacion;
+        this.fecha = fecha;
+        this.horaInicio = horaInicio;
+        this.horaFin = horaFin;
+        this.estado = estado;
+        this.monto = monto;
+    }
+    
+    public Reserva( Usuario usuario, Instalacion instalacion, LocalDate fecha, LocalTime horaInicio, LocalTime horaFin, EstadoReserva estado, Double monto) {
         this.usuario = usuario;
         this.instalacion = instalacion;
         this.fecha = fecha;
